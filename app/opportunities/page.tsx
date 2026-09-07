@@ -42,7 +42,7 @@ export default function OpportunitiesPage() {
           <div className="space-y-1">
             <div className="inline-flex items-center gap-2 bg-indigo-950 border border-indigo-800 px-3 py-1 rounded-full text-xs font-bold text-indigo-300">
               <Briefcase className="w-3.5 h-3.5 text-indigo-400" />
-              <span>SIH AI Match Engine</span>
+              <span>AI Match Engine</span>
             </div>
             <h1 className="text-2xl font-black text-white tracking-tight">AI Internship & Job Recommendations</h1>
             <p className="text-xs text-slate-400">

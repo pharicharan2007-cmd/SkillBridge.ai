@@ -10,33 +10,39 @@ const config: Config = {
     extend: {
       colors: {
         brand: {
-          50: '#f0f3ff',
-          100: '#e0e7ff',
-          200: '#c7d2fe',
-          300: '#a5b4fc',
-          400: '#818cf8',
-          500: '#6366f1',
-          600: '#4f46e5',
-          700: '#4338ca',
-          800: '#3730a3',
-          900: '#312e81',
-          950: '#1e1b4b',
+          50: '#f5f7ff',
+          100: '#ebf0fe',
+          200: '#dbe4fd',
+          300: '#bdcdfb',
+          400: '#93acf7',
+          500: '#6384f1',
+          600: '#4361ee',
+          700: '#344bc7',
+          800: '#2b3ca0',
+          900: '#26347f',
+          950: '#161d49',
+        },
+        surface: {
+          canvas: '#090a0f',
+          card: '#0f121a',
+          'card-hover': '#141824',
+          subtle: '#181d2c',
+          border: 'rgba(255, 255, 255, 0.08)',
+          'border-strong': 'rgba(255, 255, 255, 0.15)',
         },
         slate: {
-          850: '#131e32',
-          900: '#0f172a',
-          950: '#080d1a',
+          850: '#121622',
+          900: '#0c0f17',
+          950: '#07090e',
         }
       },
-      animation: {
-        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-        'float': 'float 4s ease-in-out infinite',
+      boxShadow: {
+        'saas-card': '0 0 0 1px rgba(255, 255, 255, 0.06), 0 2px 8px -2px rgba(0, 0, 0, 0.4), 0 8px 24px -4px rgba(0, 0, 0, 0.3)',
+        'saas-hover': '0 0 0 1px rgba(255, 255, 255, 0.12), 0 4px 12px -2px rgba(0, 0, 0, 0.5), 0 12px 32px -4px rgba(0, 0, 0, 0.4)',
+        'saas-sm': '0 0 0 1px rgba(255, 255, 255, 0.08), 0 1px 2px 0 rgba(0, 0, 0, 0.3)',
       },
-      keyframes: {
-        float: {
-          '0%, 100%': { transform: 'translateY(0px)' },
-          '50%': { transform: 'translateY(-6px)' },
-        }
+      borderRadius: {
+        'saas': '14px',
       }
     },
   },

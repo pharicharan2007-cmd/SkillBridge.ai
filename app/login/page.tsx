@@ -28,7 +28,7 @@ export default function LoginPage() {
             </div>
             <span className="text-2xl font-bold text-white tracking-tight">SkillBridge<span className="text-indigo-400">.ai</span></span>
           </Link>
-          <p className="text-xs text-slate-400">Sign in to your SIH 2026 Skill Bridge Portal</p>
+          <p className="text-xs text-slate-400">Sign in to your SkillBridge Career Portal</p>
         </div>
 
         {/* Role Selector Tabs */}
@@ -105,7 +105,7 @@ export default function LoginPage() {
 
         {/* Demo Credentials Quick Click */}
         <div className="pt-2 border-t border-slate-800 text-center">
-          <p className="text-[11px] text-slate-400 mb-2">SIH Demo Account loaded:</p>
+          <p className="text-[11px] text-slate-400 mb-2">Demo Student Account loaded:</p>
           <button
             onClick={() => router.push('/dashboard')}
             className="w-full bg-indigo-950/60 hover:bg-indigo-900/60 text-indigo-300 border border-indigo-800/80 rounded-xl py-2 text-xs font-semibold transition"

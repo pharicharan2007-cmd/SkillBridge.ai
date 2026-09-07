@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Opportunity } from '@/types';
-import { CheckCircle2, XCircle, Sparkles, MapPin, Building, Calendar, DollarSign, Bookmark, ArrowRight, ShieldCheck } from 'lucide-react';
+import { Check, X, MapPin, Building, Calendar, DollarSign, Bookmark, ArrowRight, ShieldCheck } from 'lucide-react';
 
 interface OpportunityCardProps {
   opportunity: Opportunity;
@@ -24,147 +24,137 @@ export const OpportunityCard: React.FC<OpportunityCardProps> = ({
   const match = opportunity.matchDetails;
   const matchScore = opportunity.matchScore || match?.finalMatchScore || 75;
 
-  let matchBadgeColor = 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40';
+  let matchBadgeStyle = 'bg-emerald-950/40 text-emerald-400 border-emerald-800/60';
   if (matchScore < 70) {
-    matchBadgeColor = 'bg-amber-500/20 text-amber-300 border-amber-500/40';
+    matchBadgeStyle = 'bg-amber-950/40 text-amber-400 border-amber-800/60';
   } else if (matchScore >= 85) {
-    matchBadgeColor = 'bg-gradient-to-r from-indigo-500/30 to-purple-500/30 text-indigo-200 border-indigo-500/50 shadow-md shadow-indigo-500/20';
+    matchBadgeStyle = 'bg-indigo-950/60 text-indigo-300 border-indigo-700/60';
   }
 
   return (
-    <div className="bg-slate-900/90 border border-slate-800 hover:border-indigo-500/50 rounded-2xl p-6 transition-all duration-300 hover:shadow-xl hover:shadow-indigo-500/10 flex flex-col justify-between relative group">
+    <div className="saas-card rounded-xl p-5 flex flex-col justify-between space-y-4 hover:border-white/[0.14] transition-all">
       
       {/* Top Header Row */}
-      <div>
-        <div className="flex items-start justify-between gap-4 mb-3">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-2xl shadow-inner shrink-0">
+      <div className="space-y-3">
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-10 h-10 rounded-lg bg-[#141824] border border-white/[0.08] flex items-center justify-center text-xl shrink-0">
               {opportunity.companyLogo}
             </div>
-            <div>
-              <h3 className="text-lg font-bold text-white group-hover:text-indigo-300 transition line-clamp-1">
+            <div className="min-w-0">
+              <h3 className="text-sm font-semibold text-white truncate">
                 {opportunity.title}
               </h3>
-              <div className="text-xs text-slate-400 font-medium flex items-center gap-2 mt-0.5">
-                <span className="flex items-center gap-1 text-slate-300">
-                  <Building className="w-3.5 h-3.5 text-indigo-400" />
-                  {opportunity.company}
-                </span>
+              <div className="text-[11px] text-slate-400 flex items-center gap-1.5 mt-0.5">
+                <span className="text-slate-300 font-medium">{opportunity.company}</span>
                 <span>•</span>
-                <span className="flex items-center gap-1">
-                  <MapPin className="w-3.5 h-3.5 text-slate-500" />
-                  {opportunity.location}
-                </span>
+                <span>{opportunity.location}</span>
               </div>
             </div>
           </div>
 
           {/* Match Score Badge */}
-          <div className={`px-3.5 py-1.5 rounded-full border text-xs font-black flex items-center gap-1.5 shrink-0 ${matchBadgeColor}`}>
-            <Sparkles className="w-3.5 h-3.5 animate-pulse" />
-            <span>{matchScore}% Match</span>
+          <div className={`px-2.5 py-1 rounded-md border text-[11px] font-semibold tabular-nums shrink-0 ${matchBadgeStyle}`}>
+            {matchScore}% Match
           </div>
         </div>
 
-        {/* Opportunity Meta Pills */}
-        <div className="flex flex-wrap gap-2 my-3 text-xs">
-          <span className="bg-slate-800/80 text-slate-300 border border-slate-700 px-2.5 py-1 rounded-md font-medium">
+        {/* Opportunity Meta Info */}
+        <div className="flex flex-wrap items-center gap-2 text-[11px] text-slate-400">
+          <span className="bg-[#141824] px-2 py-0.5 rounded border border-white/[0.06]">
             {opportunity.type}
           </span>
-          <span className="bg-slate-800/80 text-slate-300 border border-slate-700 px-2.5 py-1 rounded-md font-medium flex items-center gap-1">
-            <DollarSign className="w-3.5 h-3.5 text-emerald-400" />
+          <span className="bg-[#141824] px-2 py-0.5 rounded border border-white/[0.06] text-slate-300">
             {opportunity.stipend}
           </span>
-          <span className="bg-slate-800/80 text-slate-300 border border-slate-700 px-2.5 py-1 rounded-md font-medium flex items-center gap-1">
-            <Calendar className="w-3.5 h-3.5 text-indigo-400" />
+          <span className="bg-[#141824] px-2 py-0.5 rounded border border-white/[0.06]">
             {opportunity.duration}
           </span>
         </div>
 
         {/* Why Recommended Explanation */}
         {match?.whyRecommended && (
-          <div className="bg-indigo-950/40 border border-indigo-900/60 rounded-xl p-3 my-3 text-xs text-indigo-200 flex items-start gap-2">
-            <Sparkles className="w-4 h-4 text-indigo-400 shrink-0 mt-0.5" />
-            <div>
-              <span className="font-semibold text-indigo-300 block mb-0.5">Why recommended:</span>
-              <p className="text-slate-300 leading-relaxed">{match.whyRecommended}</p>
-            </div>
+          <div className="bg-[#121622] border border-white/[0.06] rounded-lg p-2.5 text-[11px] text-slate-300 leading-relaxed">
+            <span className="text-indigo-400 font-medium">Why matched: </span>
+            {match.whyRecommended}
           </div>
         )}
 
         {/* Matched vs Missing Skills Breakdown */}
-        <div className="space-y-2 my-4">
-          
-          {/* Matched Skills (✓) */}
-          <div className="text-xs">
-            <span className="text-slate-400 font-medium block mb-1.5">Matched Skills ({match?.matchedSkills.length || 0}):</span>
-            <div className="flex flex-wrap gap-1.5">
-              {match?.matchedSkills.map(skill => (
-                <span key={skill} className="bg-emerald-950/60 text-emerald-300 border border-emerald-800/80 px-2.5 py-0.5 rounded-full text-[11px] font-semibold flex items-center gap-1">
-                  <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+        <div className="space-y-1.5 pt-1">
+          {/* Matched Skills */}
+          {match?.matchedSkills && match.matchedSkills.length > 0 && (
+            <div className="flex flex-wrap items-center gap-1">
+              <span className="text-[10px] text-slate-500 mr-1">Matched:</span>
+              {match.matchedSkills.slice(0, 3).map(skill => (
+                <span key={skill} className="bg-[#141926] text-slate-300 border border-white/[0.06] px-1.5 py-0.5 rounded text-[10px] font-normal flex items-center gap-1">
+                  <Check className="w-2.5 h-2.5 text-emerald-400" />
                   {skill}
                 </span>
               ))}
-            </div>
-          </div>
-
-          {/* Missing Skills (✗) */}
-          {match?.missingSkills && match.missingSkills.length > 0 && (
-            <div className="text-xs pt-1">
-              <span className="text-slate-400 font-medium block mb-1.5">Missing Skills ({match.missingSkills.length}):</span>
-              <div className="flex flex-wrap gap-1.5">
-                {match.missingSkills.map(skill => (
-                  <span key={skill} className="bg-rose-950/40 text-rose-300 border border-rose-900/60 px-2.5 py-0.5 rounded-full text-[11px] font-semibold flex items-center gap-1">
-                    <XCircle className="w-3 h-3 text-rose-400" />
-                    {skill}
-                  </span>
-                ))}
-              </div>
+              {match.matchedSkills.length > 3 && (
+                <span className="text-[10px] text-slate-500">+{match.matchedSkills.length - 3}</span>
+              )}
             </div>
           )}
 
+          {/* Missing Skills */}
+          {match?.missingSkills && match.missingSkills.length > 0 && (
+            <div className="flex flex-wrap items-center gap-1">
+              <span className="text-[10px] text-slate-500 mr-1">Gap:</span>
+              {match.missingSkills.slice(0, 2).map(skill => (
+                <span key={skill} className="bg-rose-950/20 text-rose-300 border border-rose-900/40 px-1.5 py-0.5 rounded text-[10px] font-normal flex items-center gap-1">
+                  <X className="w-2.5 h-2.5 text-rose-400" />
+                  {skill}
+                </span>
+              ))}
+              {match.missingSkills.length > 2 && (
+                <span className="text-[10px] text-slate-500">+{match.missingSkills.length - 2}</span>
+              )}
+            </div>
+          )}
         </div>
       </div>
 
       {/* Footer Actions */}
-      <div className="pt-4 border-t border-slate-800/80 flex items-center justify-between gap-3 mt-2">
-        <div className="flex items-center gap-2">
+      <div className="pt-3 border-t border-white/[0.06] flex items-center justify-between gap-3">
+        <div className="flex items-center gap-1.5">
           {onToggleSave && (
             <button
               onClick={() => onToggleSave(opportunity.id)}
-              className={`p-2 rounded-lg border transition ${
+              className={`p-1.5 rounded-lg border transition ${
                 isSaved 
-                  ? 'bg-amber-500/20 border-amber-500/40 text-amber-300' 
-                  : 'bg-slate-800 border-slate-700 text-slate-400 hover:text-slate-200'
+                  ? 'bg-amber-950/40 border-amber-800/60 text-amber-400' 
+                  : 'bg-[#141824] border-white/[0.08] text-slate-400 hover:text-white'
               }`}
-              title={isSaved ? 'Unsave Role' : 'Save Role'}
+              title={isSaved ? 'Saved' : 'Save'}
             >
-              <Bookmark className={`w-4 h-4 ${isSaved ? 'fill-amber-300' : ''}`} />
+              <Bookmark className={`w-3.5 h-3.5 ${isSaved ? 'fill-amber-400' : ''}`} />
             </button>
           )}
 
           {onViewDetails && (
             <button
               onClick={() => onViewDetails(opportunity)}
-              className="text-xs font-semibold text-slate-300 hover:text-indigo-300 transition px-2 py-1"
+              className="text-xs text-slate-400 hover:text-slate-200 transition px-1.5 py-1"
             >
-              View Details
+              Details
             </button>
           )}
         </div>
 
         {isApplied ? (
-          <span className="bg-slate-800 text-emerald-400 border border-emerald-500/30 px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5">
-            <ShieldCheck className="w-4 h-4" />
+          <span className="bg-[#141824] text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-lg text-xs font-medium flex items-center gap-1.5">
+            <ShieldCheck className="w-3.5 h-3.5" />
             Applied
           </span>
         ) : (
           <button
             onClick={() => onApply(opportunity)}
-            className="bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-indigo-600/30 hover:scale-105 transition"
+            className="saas-btn-primary px-3 py-1 rounded-lg text-xs font-medium flex items-center gap-1.5"
           >
-            <span>Apply Now</span>
-            <ArrowRight className="w-3.5 h-3.5" />
+            <span>Apply</span>
+            <ArrowRight className="w-3 h-3" />
           </button>
         )}
       </div>

@@ -38,7 +38,7 @@ export default function ApplicationTrackingPage() {
       <div className="bg-slate-900/90 border border-slate-800 rounded-3xl p-6 sm:p-8 space-y-2 shadow-xl">
         <div className="inline-flex items-center gap-2 bg-indigo-950 border border-indigo-800 px-3 py-1 rounded-full text-xs font-bold text-indigo-300">
           <Send className="w-3.5 h-3.5 text-indigo-400" />
-          <span>SIH Placement Tracker</span>
+          <span>Placement & Application Tracker</span>
         </div>
         <h1 className="text-2xl font-black text-white tracking-tight">Application Tracking & Interview Status</h1>
         <p className="text-xs text-slate-400">Track real-time progress for all your submitted internships and job applications.</p>

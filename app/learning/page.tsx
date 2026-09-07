@@ -29,7 +29,7 @@ export default function LearningRecommendationsPage() {
       <div className="bg-slate-900/90 border border-slate-800 rounded-3xl p-6 sm:p-8 space-y-2 shadow-xl">
         <div className="inline-flex items-center gap-2 bg-indigo-950 border border-indigo-800 px-3 py-1 rounded-full text-xs font-bold text-indigo-300">
           <BookOpenCheck className="w-3.5 h-3.5 text-indigo-400" />
-          <span>SIH AI Learning Path</span>
+          <span>AI Learning Path</span>
         </div>
         <h1 className="text-2xl font-black text-white tracking-tight">Personalized Learning Recommendations</h1>
         <p className="text-xs text-slate-400">

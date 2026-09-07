@@ -1,0 +1,149 @@
+[
+  {
+    "id": "python",
+    "name": "Python",
+    "category": "technical",
+    "aliases": ["python programming", "python3", "py"],
+    "demand_level": "Critical"
+  },
+  {
+    "id": "machine-learning",
+    "name": "Machine Learning",
+    "category": "technical",
+    "aliases": ["ml", "applied ml", "machine learning algorithms"],
+    "demand_level": "Critical"
+  },
+  {
+    "id": "sql",
+    "name": "SQL",
+    "category": "technical",
+    "aliases": ["structured query language", "postgresql", "mysql", "relational database"],
+    "demand_level": "High"
+  },
+  {
+    "id": "data-structures",
+    "name": "Data Structures & Algorithms",
+    "category": "problem_solving",
+    "aliases": ["dsa", "data structures", "algorithms"],
+    "demand_level": "High"
+  },
+  {
+    "id": "deep-learning",
+    "name": "Deep Learning (TensorFlow / PyTorch)",
+    "category": "technical",
+    "aliases": ["tensorflow", "pytorch", "deep learning", "neural networks"],
+    "demand_level": "Critical"
+  },
+  {
+    "id": "react",
+    "name": "React.js",
+    "category": "technical",
+    "aliases": ["react", "reactjs", "react framework"],
+    "demand_level": "High"
+  },
+  {
+    "id": "nextjs",
+    "name": "Next.js",
+    "category": "technical",
+    "aliases": ["nextjs", "next.js", "react ssr"],
+    "demand_level": "High"
+  },
+  {
+    "id": "fastapi",
+    "name": "FastAPI",
+    "category": "technical",
+    "aliases": ["fastapi", "python api", "rest api"],
+    "demand_level": "High"
+  },
+  {
+    "id": "typescript",
+    "name": "TypeScript",
+    "category": "technical",
+    "aliases": ["ts", "typescript language"],
+    "demand_level": "High"
+  },
+  {
+    "id": "git",
+    "name": "Git & GitHub",
+    "category": "digital_skills",
+    "aliases": ["git", "github", "version control"],
+    "demand_level": "Critical"
+  },
+  {
+    "id": "cloud-aws",
+    "name": "Cloud Computing (AWS)",
+    "category": "digital_skills",
+    "aliases": ["aws", "amazon web services", "cloud architecture"],
+    "demand_level": "High"
+  },
+  {
+    "id": "docker",
+    "name": "Docker & Containerization",
+    "category": "technical",
+    "aliases": ["docker", "containers", "docker-compose"],
+    "demand_level": "High"
+  },
+  {
+    "id": "system-design",
+    "name": "System Design",
+    "category": "digital_skills",
+    "aliases": ["system design", "distributed systems", "microservices"],
+    "demand_level": "High"
+  },
+  {
+    "id": "pandas-numpy",
+    "name": "Pandas & NumPy",
+    "category": "technical",
+    "aliases": ["pandas", "numpy", "data analysis"],
+    "demand_level": "High"
+  },
+  {
+    "id": "prompt-engineering",
+    "name": "Prompt Engineering & GenAI",
+    "category": "technical",
+    "aliases": ["prompt engineering", "genai", "llm", "large language models"],
+    "demand_level": "Critical"
+  },
+  {
+    "id": "problem-solving",
+    "name": "Problem Solving",
+    "category": "problem_solving",
+    "aliases": ["analytical thinking", "algorithmic thinking", "critical thinking"],
+    "demand_level": "Critical"
+  },
+  {
+    "id": "communication",
+    "name": "Communication",
+    "category": "soft_skills",
+    "aliases": ["technical communication", "verbal communication", "presentation"],
+    "demand_level": "High"
+  },
+  {
+    "id": "teamwork",
+    "name": "Teamwork & Collaboration",
+    "category": "soft_skills",
+    "aliases": ["collaboration", "team player", "peer review"],
+    "demand_level": "High"
+  },
+  {
+    "id": "leadership",
+    "name": "Leadership",
+    "category": "soft_skills",
+    "aliases": ["initiative", "project ownership", "team lead"],
+    "demand_level": "Medium"
+  },
+  {
+    "id": "cad",
+    "name": "CAD & AutoCAD",
+    "category": "domain_knowledge",
+    "aliases": ["autocad", "computer aided design", "cad modeling"],
+    "demand_level": "Medium"
+  },
+  {
+    "id": "solidworks",
+    "name": "SolidWorks",
+    "category": "domain_knowledge",
+    "aliases": ["solidworks 3d", "3d modeling", "mechanical cad"],
+    "demand_level": "Medium"
+  }
+]

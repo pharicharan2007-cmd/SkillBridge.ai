@@ -3,68 +3,66 @@
 import React from 'react';
 import Link from 'next/link';
 import { useStudent } from '@/lib/context/StudentContext';
-import { Sparkles, Bell, Search, Award, UserCheck, ShieldCheck } from 'lucide-react';
+import { Bell, Search, UserCheck, Sparkles } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
   const { student } = useStudent();
 
   return (
-    <header className="sticky top-0 z-30 w-full bg-slate-900/90 backdrop-blur-md border-b border-slate-800 text-white">
-      <div className="flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-30 w-full bg-[#090a0f]/90 backdrop-blur-md border-b border-white/[0.06] text-white">
+      <div className="flex h-14 items-center justify-between px-4 sm:px-6 lg:px-8">
         
         {/* Search Bar & Role Pill */}
-        <div className="flex items-center gap-4 flex-1 max-w-xl">
-          <div className="relative w-full hidden md:block">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+        <div className="flex items-center gap-3 flex-1 max-w-xl">
+          <div className="relative w-full hidden md:block max-w-md">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
             <input
               type="text"
-              placeholder="Search skills, internships, courses, certifications..."
-              className="w-full bg-slate-800/80 text-slate-200 text-sm rounded-lg pl-9 pr-4 py-2 border border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder-slate-400 transition"
+              placeholder="Search skills, opportunities, or certifications..."
+              className="w-full bg-[#11141e] text-slate-200 text-xs rounded-lg pl-8 pr-3 py-1.5 border border-white/[0.07] focus:outline-none focus:border-indigo-500/60 placeholder-slate-400 transition"
             />
           </div>
           
-          <div className="flex items-center gap-1.5 bg-indigo-950/80 border border-indigo-700/50 px-3 py-1.5 rounded-full text-xs font-semibold text-indigo-300">
-            <ShieldCheck className="w-3.5 h-3.5 text-indigo-400" />
-            <span>Role: Student</span>
+          <div className="flex items-center gap-1.5 bg-white/[0.03] border border-white/[0.07] px-2.5 py-1 rounded-md text-[11px] font-medium text-slate-400">
+            <span className="w-1.5 h-1.5 rounded-full bg-indigo-400" />
+            <span>Student Portal</span>
           </div>
         </div>
 
         {/* Right Section: Readiness Badge & User Profile */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           
           {/* Quick Readiness Score Pill */}
           <Link 
             href="/assessment" 
-            className="hidden sm:flex items-center gap-2 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 px-3.5 py-1.5 rounded-full text-xs font-bold text-white shadow-sm transition hover:scale-105"
+            className="hidden sm:flex items-center gap-1.5 bg-[#141824] hover:bg-[#1a2030] border border-white/[0.08] px-3 py-1 rounded-md text-xs font-medium text-slate-300 transition"
           >
-            <Sparkles className="w-3.5 h-3.5 animate-pulse" />
-            <span>Readiness Score: {student.readinessScore}/100</span>
+            <span className="text-slate-400 font-normal">Readiness:</span>
+            <span className="font-semibold text-white tabular-nums">{student.readinessScore}/100</span>
           </Link>
 
           {/* Notifications Button */}
-          <button className="relative p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition">
-            <Bell className="w-5 h-5" />
-            <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-indigo-500 rounded-full animate-ping" />
-            <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-indigo-500 rounded-full" />
+          <button className="relative p-1.5 rounded-md text-slate-400 hover:text-white hover:bg-white/[0.05] transition">
+            <Bell className="w-4 h-4" />
+            <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-indigo-400 rounded-full" />
           </button>
 
           {/* User Profile Dropdown / Trigger */}
-          <Link href="/profile" className="flex items-center gap-3 pl-2 border-l border-slate-800 hover:opacity-90 transition">
+          <Link href="/profile" className="flex items-center gap-2.5 pl-2 border-l border-white/[0.06] hover:opacity-90 transition">
             <div className="relative">
               <img
                 src={student.avatar}
                 alt={student.name}
-                className="w-9 h-9 rounded-full object-cover ring-2 ring-indigo-500/50"
+                className="w-7 h-7 rounded-full object-cover ring-1 ring-white/[0.15]"
               />
-              <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 border-2 border-slate-900 rounded-full" />
+              <span className="absolute bottom-0 right-0 w-2 h-2 bg-emerald-400 border-2 border-[#090a0f] rounded-full" />
             </div>
             <div className="hidden lg:block text-left">
-              <div className="text-sm font-semibold text-slate-100 flex items-center gap-1">
-                <span>{student.name}</span>
-                <UserCheck className="w-3.5 h-3.5 text-indigo-400 inline" />
+              <div className="text-xs font-medium text-slate-200 leading-none">
+                {student.name}
               </div>
-              <div className="text-xs text-slate-400 truncate max-w-[140px]">
-                {student.branch} ({student.semester}th Sem)
+              <div className="text-[10px] text-slate-400 mt-1 truncate max-w-[130px]">
+                {student.branch}
               </div>
             </div>
           </Link>

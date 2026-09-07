@@ -1,0 +1,184 @@
+[
+  {
+    "id": "std-101",
+    "name": "Rohan Sharma",
+    "email": "rohan.sharma@institution.edu.in",
+    "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=256",
+    "college": "Delhi Technological University (DTU)",
+    "institution": "Delhi Technological University (DTU)",
+    "degree": "B.Tech",
+    "branch": "Computer Science and Engineering",
+    "year": 4,
+    "semester": 7,
+    "cgpa": 8.65,
+    "readiness_score": 72,
+    "readinessScore": 72,
+    "target_role": "AI/ML Engineer",
+    "targetRole": "AI/ML Engineer",
+    "interests": ["Artificial Intelligence", "Data Engineering", "Full Stack Development"],
+    "careerInterests": ["Artificial Intelligence", "Data Engineering", "Full Stack Development"],
+    "assessmentCompleted": true,
+    "lastAssessmentDate": "2026-08-28",
+    "skills": [
+      { "id": "sk-1", "name": "Python", "category": "Technical", "level": 85, "verified": true, "demandLevel": "Critical" },
+      { "id": "sk-2", "name": "Machine Learning", "category": "Technical", "level": 75, "verified": true, "demandLevel": "Critical" },
+      { "id": "sk-3", "name": "SQL", "category": "Technical", "level": 80, "verified": true, "demandLevel": "High" },
+      { "id": "sk-4", "name": "TensorFlow / PyTorch", "category": "Technical", "level": 40, "verified": false, "demandLevel": "Critical" },
+      { "id": "sk-5", "name": "React.js", "category": "Technical", "level": 88, "verified": true, "demandLevel": "High" },
+      { "id": "sk-6", "name": "TypeScript", "category": "Technical", "level": 82, "verified": true, "demandLevel": "High" },
+      { "id": "sk-9", "name": "Data Structures & Algorithms", "category": "Problem Solving", "level": 78, "verified": true, "demandLevel": "High" },
+      { "id": "sk-10", "name": "Git & GitHub", "category": "Digital Skills", "level": 90, "verified": true, "demandLevel": "Critical" },
+      { "id": "sk-16", "name": "Problem Solving", "category": "Problem Solving", "level": 80, "verified": true, "demandLevel": "Critical" },
+      { "id": "sk-17", "name": "Technical Communication", "category": "Soft Skills", "level": 75, "verified": true, "demandLevel": "High" },
+      { "id": "sk-24", "name": "Cloud Computing (AWS)", "category": "Digital Skills", "level": 55, "verified": false, "demandLevel": "High" },
+      { "id": "sk-25", "name": "System Design", "category": "Digital Skills", "level": 50, "verified": false, "demandLevel": "High" },
+      { "id": "sk-30", "name": "Prompt Engineering", "category": "Technical", "level": 78, "verified": true, "demandLevel": "Critical" },
+      { "id": "sk-31", "name": "Pandas & NumPy", "category": "Technical", "level": 82, "verified": true, "demandLevel": "High" }
+    ],
+    "top_gaps": [
+      {
+        "skillId": "sk-4",
+        "skillName": "TensorFlow / PyTorch",
+        "category": "Technical",
+        "currentLevel": 40,
+        "requiredLevel": 80,
+        "gapPercentage": 50,
+        "priority": "Critical",
+        "recommendedAction": "Complete Deep Learning Specialization on Coursera & build a CNN project."
+      },
+      {
+        "skillId": "sk-24",
+        "skillName": "Cloud Computing (AWS)",
+        "category": "Digital Skills",
+        "currentLevel": 55,
+        "requiredLevel": 75,
+        "gapPercentage": 27,
+        "priority": "High",
+        "recommendedAction": "Practice AWS EC2, S3 & SageMaker deployment labs."
+      },
+      {
+        "skillId": "sk-25",
+        "skillName": "System Design",
+        "category": "Digital Skills",
+        "currentLevel": 50,
+        "requiredLevel": 75,
+        "gapPercentage": 33,
+        "priority": "High",
+        "recommendedAction": "Study Microservices & API gateway architecture principles."
+      },
+      {
+        "skillId": "sk-8",
+        "skillName": "Docker & Containerization",
+        "category": "Technical",
+        "currentLevel": 45,
+        "requiredLevel": 70,
+        "gapPercentage": 36,
+        "priority": "Medium",
+        "recommendedAction": "Containerize a FastAPI + React project using Docker Compose."
+      }
+    ],
+    "topGaps": [
+      {
+        "skillId": "sk-4",
+        "skillName": "TensorFlow / PyTorch",
+        "category": "Technical",
+        "currentLevel": 40,
+        "requiredLevel": 80,
+        "gapPercentage": 50,
+        "priority": "Critical",
+        "recommendedAction": "Complete Deep Learning Specialization on Coursera & build a CNN project."
+      },
+      {
+        "skillId": "sk-24",
+        "skillName": "Cloud Computing (AWS)",
+        "category": "Digital Skills",
+        "currentLevel": 55,
+        "requiredLevel": 75,
+        "gapPercentage": 27,
+        "priority": "High",
+        "recommendedAction": "Practice AWS EC2, S3 & SageMaker deployment labs."
+      },
+      {
+        "skillId": "sk-25",
+        "skillName": "System Design",
+        "category": "Digital Skills",
+        "currentLevel": 50,
+        "requiredLevel": 75,
+        "gapPercentage": 33,
+        "priority": "High",
+        "recommendedAction": "Study Microservices & API gateway architecture principles."
+      },
+      {
+        "skillId": "sk-8",
+        "skillName": "Docker & Containerization",
+        "category": "Technical",
+        "currentLevel": 45,
+        "requiredLevel": 70,
+        "gapPercentage": 36,
+        "priority": "Medium",
+        "recommendedAction": "Containerize a FastAPI + React project using Docker Compose."
+      }
+    ],
+    "certifications": [
+      { "id": "cert-1", "title": "Deep Learning Fundamentals", "issuer": "NPTEL / IIT Madras", "issueDate": "2026-03", "verified": true },
+      { "id": "cert-2", "title": "AWS Cloud Practitioner", "issuer": "Amazon Web Services", "issueDate": "2025-11", "verified": true },
+      { "id": "cert-3", "title": "Data Structures with C++", "issuer": "Coursera", "issueDate": "2025-06", "verified": true }
+    ],
+    "projects": [
+      {
+        "id": "proj-1",
+        "title": "End-to-End Multimodal Emotion Classifier",
+        "techStack": ["Python", "PyTorch", "FastAPI"],
+        "description": "Trained CNN & Transformer models on facial and audio inputs with 91% accuracy."
+      },
+      {
+        "id": "proj-2",
+        "title": "Real-Time Collaborative Code Editor",
+        "techStack": ["React", "TypeScript", "WebSocket"],
+        "description": "Built interactive coding platform with syntax highlighting and live state synchronization."
+      }
+    ]
+  },
+  {
+    "id": "std-102",
+    "name": "Priya Patel",
+    "email": "priya.patel@institution.edu.in",
+    "avatar": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=256",
+    "college": "IIT Bombay",
+    "institution": "IIT Bombay",
+    "degree": "B.Tech",
+    "branch": "Computer Science",
+    "year": 4,
+    "semester": 7,
+    "cgpa": 9.10,
+    "readiness_score": 85,
+    "readinessScore": 85,
+    "target_role": "Full Stack Developer",
+    "targetRole": "Full Stack Developer",
+    "interests": ["Web Development", "Cloud Computing", "DevOps"],
+    "careerInterests": ["Web Development", "Cloud Computing", "DevOps"],
+    "assessmentCompleted": true,
+    "lastAssessmentDate": "2026-09-01",
+    "skills": [
+      { "id": "sk-5", "name": "React.js", "category": "Technical", "level": 92, "verified": true, "demandLevel": "High" },
+      { "id": "sk-6", "name": "TypeScript", "category": "Technical", "level": 88, "verified": true, "demandLevel": "High" },
+      { "id": "sk-1", "name": "Python", "category": "Technical", "level": 80, "verified": true, "demandLevel": "Critical" },
+      { "id": "sk-3", "name": "SQL", "category": "Technical", "level": 85, "verified": true, "demandLevel": "High" },
+      { "id": "sk-10", "name": "Git & GitHub", "category": "Digital Skills", "level": 95, "verified": true, "demandLevel": "Critical" },
+      { "id": "sk-24", "name": "Cloud Computing (AWS)", "category": "Digital Skills", "level": 70, "verified": true, "demandLevel": "High" }
+    ],
+    "top_gaps": [],
+    "topGaps": [],
+    "certifications": [
+      { "id": "cert-4", "title": "Meta Front-End Developer", "issuer": "Coursera", "issueDate": "2025-10", "verified": true }
+    ],
+    "projects": [
+      {
+        "id": "proj-3",
+        "title": "Cloud-Native E-Commerce API",
+        "techStack": ["Next.js", "PostgreSQL", "Docker"],
+        "description": "Microservices-ready e-commerce core with Redis caching and Stripe checkout mock."
+      }
+    ]
+  }
+]

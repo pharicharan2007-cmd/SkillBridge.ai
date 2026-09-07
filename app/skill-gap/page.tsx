@@ -104,7 +104,7 @@ export default function SkillGapPage() {
           <div className="space-y-1">
             <div className="inline-flex items-center gap-2 bg-indigo-950 border border-indigo-800 px-3 py-1 rounded-full text-xs font-bold text-indigo-300">
               <GitCompare className="w-3.5 h-3.5 text-indigo-400" />
-              <span>SIH 2026 Skill Gap Matrix</span>
+              <span>Skill Gap Matrix</span>
             </div>
             <h1 className="text-2xl font-black text-white tracking-tight">Academia–Industry Skill Gap Analysis</h1>
             <p className="text-xs text-slate-400">Comparing your current proficiency against real-time industry job role requirements.</p>

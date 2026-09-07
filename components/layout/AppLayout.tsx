@@ -19,7 +19,7 @@ export const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children })
   ];
 
   return (
-    <div className="flex min-h-screen bg-slate-950 text-slate-100">
+    <div className="flex min-h-screen bg-[#090a0f] text-slate-100">
       
       {/* Desktop Sidebar */}
       <Sidebar />

@@ -53,7 +53,7 @@ export default function SkillAssessmentPage() {
         <div className="space-y-1">
           <div className="inline-flex items-center gap-2 bg-indigo-950 border border-indigo-800 px-3 py-1 rounded-full text-xs font-bold text-indigo-300">
             <BrainCircuit className="w-3.5 h-3.5 text-indigo-400" />
-            <span>SIH 2026 AI Assessment Module</span>
+            <span>AI Assessment Module</span>
           </div>
           <h1 className="text-2xl font-black text-white tracking-tight">Interactive Skill & Placement Assessment</h1>
           <p className="text-xs text-slate-400">12 Multi-domain questions evaluating Technical, Problem Solving, Communication & Digital competencies.</p>
@@ -79,7 +79,7 @@ export default function SkillAssessmentPage() {
             </span>
             <h2 className="text-3xl font-black text-white">Updated Readiness Score: {student.readinessScore}/100</h2>
             <p className="text-sm text-slate-300 max-w-md mx-auto">
-              Your responses have been processed by the SIH Skill Engine. Your skill proficiencies and skill gaps have been dynamically recalculated!
+              Your responses have been processed by the SkillBridge AI Engine. Your skill proficiencies and skill gaps have been dynamically recalculated!
             </p>
           </div>
 
