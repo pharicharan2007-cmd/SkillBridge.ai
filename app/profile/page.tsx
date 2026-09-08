@@ -16,7 +16,8 @@ import {
   ShieldCheck, 
   Clock,
   ExternalLink,
-  Edit3
+  Edit3,
+  FolderGit2
 } from 'lucide-react';
 
 export default function SkillProfilePage() {
@@ -84,13 +85,22 @@ export default function SkillProfilePage() {
               <Clock className="w-4 h-4 text-indigo-400" />
               <span>{student.lastAssessmentDate || 'Recently Completed'}</span>
             </div>
-            <Link
-              href="/assessment"
-              className="inline-flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition"
-            >
-              <BrainCircuit className="w-3.5 h-3.5" />
-              <span>Retake Quiz</span>
-            </Link>
+            <div className="flex items-center gap-2 justify-end pt-1">
+              <Link
+                href="/portfolio"
+                className="inline-flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition shadow"
+              >
+                <FolderGit2 className="w-3.5 h-3.5" />
+                <span>Digital Portfolio</span>
+              </Link>
+              <Link
+                href="/assessment"
+                className="inline-flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition shadow"
+              >
+                <BrainCircuit className="w-3.5 h-3.5" />
+                <span>Retake Quiz</span>
+              </Link>
+            </div>
           </div>
 
         </div>

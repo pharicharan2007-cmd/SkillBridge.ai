@@ -1,3 +1,5 @@
+export type UserRole = 'student' | 'recruiter' | 'faculty' | 'institution';
+
 export type SkillCategory = 'Technical' | 'Soft Skills' | 'Problem Solving' | 'Digital Skills' | 'Domain Knowledge' | 'Career Interests';
 
 export interface Skill {
@@ -18,6 +20,17 @@ export interface SkillGapItem {
   gapPercentage: number;
   priority: 'Critical' | 'High' | 'Medium';
   recommendedAction: string;
+}
+
+export interface StudentPortfolioProject {
+  id: string;
+  title: string;
+  description: string;
+  techStack: string[];
+  githubUrl?: string;
+  liveDemoUrl?: string;
+  verifiedBy?: string;
+  date: string;
 }
 
 export interface StudentProfile {
@@ -43,6 +56,16 @@ export interface StudentProfile {
     issuer: string;
     issueDate: string;
     verified: boolean;
+    credentialId?: string;
+  }[];
+  projects?: StudentPortfolioProject[];
+  internshipsCompleted?: {
+    id: string;
+    role: string;
+    company: string;
+    duration: string;
+    certificateUrl?: string;
+    verified: boolean;
   }[];
 }
 
@@ -52,7 +75,7 @@ export interface Opportunity {
   company: string;
   companyLogo: string;
   location: string;
-  type: 'Internship' | 'Full-time' | 'Remote Internship';
+  type: 'Internship' | 'Full-time' | 'Remote Internship' | 'Live Project' | 'Apprenticeship';
   stipend: string;
   duration: string;
   deadline: string;
@@ -63,6 +86,7 @@ export interface Opportunity {
   description: string;
   responsibilities: string[];
   perks: string[];
+  postedBy?: string;
   matchScore?: number; // Calculated dynamically
   matchDetails?: {
     finalMatchScore?: number;
@@ -91,7 +115,7 @@ export interface LearningResource {
   id: string;
   title: string;
   provider: string;
-  type: 'Course' | 'Certification' | 'Project' | 'Bootcamp';
+  type: 'Course' | 'Certification' | 'Project' | 'Bootcamp' | 'Workshop';
   duration: string;
   level: 'Beginner' | 'Intermediate' | 'Advanced';
   skillAddressed: string;
@@ -99,6 +123,7 @@ export interface LearningResource {
   enrollUrl: string;
   image: string;
   isFree: boolean;
+  publishedByIndustry?: string;
 }
 
 export interface ApplicationRecord {
@@ -106,6 +131,10 @@ export interface ApplicationRecord {
   opportunityId: string;
   opportunityTitle: string;
   company: string;
+  studentName?: string;
+  studentEmail?: string;
+  studentBranch?: string;
+  studentCgpa?: number;
   appliedDate: string;
   status: 'Submitted' | 'Under Review' | 'Interview Scheduled' | 'Shortlisted' | 'Offered' | 'Rejected';
   matchScoreAtApplication: number;
@@ -115,4 +144,73 @@ export interface ApplicationRecord {
     date: string;
     completed: boolean;
   }[];
+}
+
+export interface FacultyOpportunity {
+  id: string;
+  title: string;
+  organization: string;
+  location: string;
+  type: 'Faculty Internship' | 'Industrial Training' | 'Faculty Development Program (FDP)' | 'Consultancy Project' | 'Collaborative Research';
+  domain: string;
+  stipendOrGrant: string;
+  duration: string;
+  deadline: string;
+  eligibility: string;
+  description: string;
+  deliverables: string[];
+  sponsoredBy: string;
+  seats: number;
+}
+
+export interface FacultyApplication {
+  id: string;
+  opportunityId: string;
+  opportunityTitle: string;
+  organization: string;
+  type: string;
+  facultyName: string;
+  facultyDesignation: string;
+  department: string;
+  institution: string;
+  appliedDate: string;
+  status: 'Proposal Submitted' | 'Under Evaluation' | 'Approved' | 'Completed';
+  proposalNote: string;
+}
+
+export interface CollaborationInitiative {
+  id: string;
+  title: string;
+  industryPartner: string;
+  type: 'Innovation Challenge' | 'Guest Lecture' | 'Live Project' | 'Hackathon';
+  domain: string;
+  description: string;
+  rewardOrStipend: string;
+  registrationDeadline: string;
+  dateOrDuration: string;
+  participantsCount: number;
+  status: 'Open' | 'Upcoming' | 'In Progress';
+}
+
+export interface MentorshipSession {
+  id: string;
+  mentorName: string;
+  mentorTitle: string;
+  company: string;
+  avatar: string;
+  expertise: string[];
+  availableSlots: string[];
+  sessionDuration: string;
+  rating: number;
+  bio: string;
+}
+
+export interface DepartmentMetric {
+  name: string;
+  totalStudents: number;
+  avgReadinessScore: number;
+  placementRate: number;
+  activeInternships: number;
+  topSkills: string[];
+  criticalGaps: string[];
 }

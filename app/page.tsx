@@ -11,7 +11,11 @@ import {
   CheckCircle2,
   BarChart3,
   Layers,
-  Sparkles
+  Sparkles,
+  GraduationCap,
+  Building2,
+  BookOpenCheck,
+  ShieldCheck
 } from 'lucide-react';
 
 export default function LandingPage() {
@@ -93,6 +97,58 @@ export default function LandingPage() {
             <Zap className="w-4 h-4 text-slate-400" />
             <span>Take Quick Assessment</span>
           </Link>
+        </div>
+
+        {/* 4 Dedicated Portals Quick Switcher Bar */}
+        <div className="pt-6 max-w-4xl mx-auto">
+          <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-3">
+            Explore the 4 Dedicated Collaboration Portals:
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-left">
+            <Link
+              href="/dashboard"
+              className="bg-[#0f121d] hover:bg-[#141824] border border-white/[0.08] hover:border-indigo-500/50 p-3.5 rounded-2xl transition group"
+            >
+              <div className="flex items-center gap-2 text-indigo-400 mb-1">
+                <GraduationCap className="w-4 h-4" />
+                <span className="text-xs font-bold text-white group-hover:text-indigo-300">Student Portal</span>
+              </div>
+              <p className="text-[10px] text-slate-400 leading-tight">Assessments, Skill Matrix, Portfolio & Jobs</p>
+            </Link>
+
+            <Link
+              href="/industry"
+              className="bg-[#0f121d] hover:bg-[#141824] border border-white/[0.08] hover:border-indigo-500/50 p-3.5 rounded-2xl transition group"
+            >
+              <div className="flex items-center gap-2 text-indigo-400 mb-1">
+                <Building2 className="w-4 h-4" />
+                <span className="text-xs font-bold text-white group-hover:text-indigo-300">Industry Portal</span>
+              </div>
+              <p className="text-[10px] text-slate-400 leading-tight">Post Roles, ATS Shortlisting & Courses</p>
+            </Link>
+
+            <Link
+              href="/faculty"
+              className="bg-[#0f121d] hover:bg-[#141824] border border-white/[0.08] hover:border-indigo-500/50 p-3.5 rounded-2xl transition group"
+            >
+              <div className="flex items-center gap-2 text-indigo-400 mb-1">
+                <BookOpenCheck className="w-4 h-4" />
+                <span className="text-xs font-bold text-white group-hover:text-indigo-300">Faculty Portal</span>
+              </div>
+              <p className="text-[10px] text-slate-400 leading-tight">Sabbaticals, FDPs & Joint Grants</p>
+            </Link>
+
+            <Link
+              href="/institution"
+              className="bg-[#0f121d] hover:bg-[#141824] border border-white/[0.08] hover:border-indigo-500/50 p-3.5 rounded-2xl transition group"
+            >
+              <div className="flex items-center gap-2 text-emerald-400 mb-1">
+                <ShieldCheck className="w-4 h-4" />
+                <span className="text-xs font-bold text-white group-hover:text-emerald-300">Campus Portal</span>
+              </div>
+              <p className="text-[10px] text-slate-400 leading-tight">Employability Analytics & NAAC Reports</p>
+            </Link>
+          </div>
         </div>
 
         {/* Realistic SaaS Product Showcase Preview */}
