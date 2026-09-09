@@ -7,14 +7,9 @@ import { useStudent } from '@/lib/context/StudentContext';
 import { 
   GitCompare, 
   Target, 
-  AlertTriangle, 
   CheckCircle2, 
-  ArrowRight, 
   BookOpen, 
-  BrainCircuit, 
-  TrendingUp, 
   Sparkles,
-  Zap
 } from 'lucide-react';
 
 export default function SkillGapPage() {
@@ -97,29 +92,29 @@ export default function SkillGapPage() {
 
   return (
     <AppLayout>
-      
-      {/* Top Banner */}
-      <div className="bg-slate-900/90 border border-slate-800 rounded-3xl p-6 sm:p-8 space-y-4 shadow-xl">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div className="space-y-1">
-            <div className="inline-flex items-center gap-2 bg-indigo-950 border border-indigo-800 px-3 py-1 rounded-full text-xs font-bold text-indigo-300">
-              <GitCompare className="w-3.5 h-3.5 text-indigo-400" />
+      <div className="space-y-6">
+        
+        {/* Top Banner */}
+        <div className="enterprise-card rounded-xl p-6 sm:p-7 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="space-y-1.5">
+            <div className="inline-flex items-center gap-2 bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-900 px-3 py-1 rounded-full text-xs font-bold text-blue-700 dark:text-blue-300">
+              <GitCompare className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
               <span>Skill Gap Matrix</span>
             </div>
-            <h1 className="text-2xl font-black text-white tracking-tight">Academia–Industry Skill Gap Analysis</h1>
-            <p className="text-xs text-slate-400">Comparing your current proficiency against real-time industry job role requirements.</p>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Academia–Industry Skill Gap Analysis</h1>
+            <p className="text-xs text-slate-500 dark:text-slate-400">Comparing your verified competencies against industry job benchmarks.</p>
           </div>
 
           {/* Role Switcher Dropdown */}
           <div className="space-y-1">
-            <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">Target Role Benchmark:</label>
+            <label className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">Target Role Benchmark:</label>
             <select
               value={selectedTargetRole}
               onChange={(e) => {
                 setSelectedTargetRole(e.target.value);
                 updateTargetRole(e.target.value);
               }}
-              className="bg-slate-950 border border-indigo-500/50 text-indigo-200 text-xs font-bold rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer shadow-inner"
+              className="bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold rounded-lg px-3.5 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer shadow-sm"
             >
               {availableTargetRoles.map(role => (
                 <option key={role} value={role}>{role}</option>
@@ -127,96 +122,98 @@ export default function SkillGapPage() {
             </select>
           </div>
         </div>
-      </div>
 
-      {/* Comparative Gap Visual Bars */}
-      <div className="bg-slate-900/90 border border-slate-800 rounded-3xl p-6 sm:p-8 space-y-6 shadow-xl">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-extrabold text-white flex items-center gap-2">
-            <Target className="w-5 h-5 text-indigo-400" />
-            <span>Benchmark Comparison: <span className="text-indigo-300">{selectedTargetRole}</span></span>
-          </h2>
+        {/* Comparative Gap Visual Bars */}
+        <div className="enterprise-card rounded-xl p-6 sm:p-7 space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <Target className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+              <span>Benchmark Comparison: <span className="text-blue-600 dark:text-blue-400 font-semibold">{selectedTargetRole}</span></span>
+            </h2>
 
-          <div className="flex items-center gap-4 text-xs font-medium text-slate-400">
-            <span className="flex items-center gap-1.5">
-              <span className="w-3 h-3 bg-indigo-500 rounded-sm inline-block" />
-              Your Current Level
-            </span>
-            <span className="flex items-center gap-1.5">
-              <span className="w-3 h-3 bg-slate-700 rounded-sm inline-block" />
-              Industry Requirement
-            </span>
-          </div>
-        </div>
-
-        <div className="space-y-6">
-          {gapAnalysis.map((item, idx) => (
-            <div key={idx} className="bg-slate-950/80 border border-slate-800 rounded-2xl p-4 space-y-2">
-              <div className="flex items-center justify-between text-xs">
-                <div className="flex items-center gap-2">
-                  <span className="font-bold text-white text-sm">{item.skillName}</span>
-                  {item.verified && (
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                  )}
-                  {item.gapPercentage > 0 && (
-                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
-                      item.priority === 'Critical' 
-                        ? 'bg-rose-950 text-rose-300 border-rose-800' 
-                        : item.priority === 'High' 
-                        ? 'bg-amber-950 text-amber-300 border-amber-800'
-                        : 'bg-emerald-950 text-emerald-300 border-emerald-800'
-                    }`}>
-                      {item.gapPercentage > 0 ? `-${item.gapPercentage}% Gap (${item.priority})` : 'Target Achieved'}
-                    </span>
-                  )}
-                </div>
-
-                <div className="text-right font-semibold">
-                  <span className="text-indigo-400 font-extrabold text-sm">{item.currentLevel}%</span>
-                  <span className="text-slate-500 text-xs"> / {item.requiredLevel}% Target</span>
-                </div>
-              </div>
-
-              {/* Comparative Progress Trackers */}
-              <div className="relative w-full h-4 bg-slate-800 rounded-full overflow-hidden">
-                {/* Industry Target Marker Background */}
-                <div 
-                  className="absolute top-0 bottom-0 bg-slate-700/80 rounded-full"
-                  style={{ width: `${item.requiredLevel}%` }}
-                />
-                {/* Student Current Level Fill */}
-                <div 
-                  className="absolute top-0 bottom-0 bg-gradient-to-r from-indigo-500 via-violet-500 to-indigo-400 rounded-full transition-all duration-700 shadow-lg"
-                  style={{ width: `${item.currentLevel}%` }}
-                />
-              </div>
-
+            <div className="flex items-center gap-4 text-xs font-medium text-slate-500 dark:text-slate-400">
+              <span className="flex items-center gap-1.5">
+                <span className="w-3 h-3 bg-blue-600 dark:bg-blue-500 rounded-sm inline-block" />
+                Your Current Level
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="w-3 h-3 bg-slate-300 dark:bg-slate-700 rounded-sm inline-block" />
+                Industry Requirement
+              </span>
             </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Recommended Action Footer */}
-      <div className="bg-gradient-to-r from-indigo-950/80 to-slate-900 border border-indigo-800/80 rounded-3xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-indigo-900 border border-indigo-700 flex items-center justify-center text-indigo-300 shrink-0">
-            <Sparkles className="w-5 h-5" />
           </div>
-          <div>
-            <h3 className="text-sm font-bold text-white">Bridge identified gaps with curated courses</h3>
-            <p className="text-xs text-slate-300">Targeted courses and hands-on projects available for PyTorch, AWS, and System Design.</p>
+
+          <div className="space-y-4">
+            {gapAnalysis.map((item, idx) => (
+              <div key={idx} className="enterprise-row rounded-xl p-4 space-y-2.5">
+                <div className="flex items-center justify-between text-xs">
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-slate-900 dark:text-white text-sm">{item.skillName}</span>
+                    {item.verified && (
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                    )}
+                    {item.gapPercentage > 0 ? (
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
+                        item.priority === 'Critical' 
+                          ? 'bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-300 border-rose-200 dark:border-rose-900' 
+                          : item.priority === 'High' 
+                          ? 'bg-amber-50 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-900'
+                          : 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-900'
+                      }`}>
+                        -{item.gapPercentage}% Gap ({item.priority})
+                      </span>
+                    ) : (
+                      <span className="status-pill status-pill-green text-[10px]">Target Met</span>
+                    )}
+                  </div>
+
+                  <div className="text-right font-semibold">
+                    <span className="text-blue-600 dark:text-blue-400 font-extrabold text-sm">{item.currentLevel}%</span>
+                    <span className="text-slate-500 dark:text-slate-400 text-xs"> / {item.requiredLevel}% Target</span>
+                  </div>
+                </div>
+
+                {/* Comparative Progress Trackers */}
+                <div className="relative w-full h-3 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+                  {/* Industry Target Marker Background */}
+                  <div 
+                    className="absolute top-0 bottom-0 bg-slate-300 dark:bg-slate-700 rounded-full"
+                    style={{ width: `${item.requiredLevel}%` }}
+                  />
+                  {/* Student Current Level Fill */}
+                  <div 
+                    className="absolute top-0 bottom-0 bg-blue-600 dark:bg-blue-500 rounded-full transition-all duration-700 shadow-sm"
+                    style={{ width: `${item.currentLevel}%` }}
+                  />
+                </div>
+
+              </div>
+            ))}
           </div>
         </div>
 
-        <Link
-          href="/learning"
-          className="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-2.5 rounded-xl text-xs font-bold shadow-lg shadow-indigo-600/30 transition hover:scale-105 shrink-0 flex items-center gap-2"
-        >
-          <BookOpen className="w-4 h-4" />
-          <span>View Personalized Learning Path</span>
-        </Link>
-      </div>
+        {/* Recommended Action Footer */}
+        <div className="enterprise-card rounded-xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-900 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0">
+              <Sparkles className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="text-sm font-bold text-slate-900 dark:text-white">Bridge identified gaps with curated courses</h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Targeted courses and hands-on projects available for PyTorch, AWS, and System Design.</p>
+            </div>
+          </div>
 
+          <Link
+            href="/learning"
+            className="enterprise-btn-primary px-5 py-2.5 rounded-lg text-xs font-semibold shrink-0 flex items-center gap-2"
+          >
+            <BookOpen className="w-4 h-4" />
+            <span>View Personalized Learning Path</span>
+          </Link>
+        </div>
+
+      </div>
     </AppLayout>
   );
 }

@@ -5,16 +5,24 @@ export interface InstitutionSummary {
   department: string;
   affiliation: string;
   totalStudentsEnrolled: number;
-  overallReadinessIndex: number; // 0-100
-  internshipParticipationRate: number; // percentage
-  placementRate: number; // percentage
+  overallReadinessIndex: number;
+  internshipParticipationRate: number;
+  placementRate: number;
   partnerCompaniesCount: number;
   facultyParticipationCount: number;
+  naacGrade: string;
+  nirfRank: number;
   readinessCohorts: {
     high: { count: number; percentage: number; label: string };
     moderate: { count: number; percentage: number; label: string };
     needsIntervention: { count: number; percentage: number; label: string };
   };
+  naacRubric: {
+    criterion: string;
+    subCriterion: string;
+    status: 'Compliant' | 'Action Required' | 'In Progress';
+    metric?: string;
+  }[];
   departmentMetrics: DepartmentMetric[];
   industrySkillTrends: {
     skill: string;
@@ -25,93 +33,108 @@ export interface InstitutionSummary {
 }
 
 export const MOCK_INSTITUTION_DATA: InstitutionSummary = {
-  institutionName: 'All India Institute of Ayurveda & Affiliated Tech Campuses',
-  department: 'Academic Collaboration & Career Services Directorate',
-  affiliation: 'Ministry of Ayush, Government of India',
-  totalStudentsEnrolled: 1840,
-  overallReadinessIndex: 73,
-  internshipParticipationRate: 86,
-  placementRate: 82,
-  partnerCompaniesCount: 48,
-  facultyParticipationCount: 64,
+  institutionName: 'Delhi Technological University (DTU)',
+  department: 'Office of Career Services & Industry Relations',
+  affiliation: 'AICTE / GGSIPU, Government of NCT Delhi',
+  totalStudentsEnrolled: 4200,
+  overallReadinessIndex: 74,
+  internshipParticipationRate: 83,
+  placementRate: 71,
+  partnerCompaniesCount: 52,
+  facultyParticipationCount: 78,
+  naacGrade: 'A+',
+  nirfRank: 36,
   readinessCohorts: {
-    high: { count: 956, percentage: 52, label: 'High Readiness (Score ≥ 75)' },
-    moderate: { count: 625, percentage: 34, label: 'Moderate Readiness (Score 50–74)' },
-    needsIntervention: { count: 259, percentage: 14, label: 'Skill Gap Intervention Needed (Score < 50)' }
+    high: { count: 1890, percentage: 45, label: 'Tier 1 — High Readiness (Score ≥ 75)' },
+    moderate: { count: 1680, percentage: 40, label: 'Tier 2 — Moderate Readiness (Score 50–74)' },
+    needsIntervention: { count: 630, percentage: 15, label: 'Tier 3 — Skill Gap Intervention Required (Score < 50)' }
   },
+  naacRubric: [
+    { criterion: '5.1 — Student Support', subCriterion: 'Career Counselling Sessions', status: 'Compliant', metric: '12 sessions / semester' },
+    { criterion: '5.2 — Student Progression', subCriterion: 'Placement % (6-month post-graduation)', status: 'Action Required', metric: '71% — target 80%' },
+    { criterion: '3.4 — Research Output', subCriterion: 'Publications per Faculty (avg)', status: 'In Progress', metric: '4.2 avg — target 6.0' },
+    { criterion: '1.3 — Curriculum Enrichment', subCriterion: 'Industry-mapped Elective Courses', status: 'Action Required', metric: '34 / 48 updated — 14 pending' },
+    { criterion: '6.5 — Institutional Quality Assurance', subCriterion: 'IQAC Annual Report Submitted', status: 'Compliant', metric: 'Submitted Aug 2026' },
+  ],
   departmentMetrics: [
     {
-      name: 'Ayurveda Medicine & Clinical Sciences',
-      totalStudents: 540,
-      avgReadinessScore: 78,
-      placementRate: 88,
-      activeInternships: 490,
-      topSkills: ['Clinical Diagnostics', 'Herbal Pharmacognosy', 'Patient Care Ethics'],
-      criticalGaps: ['Clinical EHR Analytics', 'Digital Telemedicine Tools']
+      name: 'Computer Science & Engineering (CSE)',
+      totalStudents: 1400,
+      avgReadinessScore: 76,
+      placementRate: 78,
+      activeInternships: 1180,
+      topSkills: ['Data Structures & Algorithms', 'Python', 'Git & Linux', 'SQL & Data Pipelines'],
+      criticalGaps: ['TensorFlow / PyTorch', 'Distributed Systems', 'Docker & DevOps']
     },
     {
-      name: 'Ayush Health Informatics & Biomedical Engg',
-      totalStudents: 420,
-      avgReadinessScore: 74,
-      placementRate: 84,
-      activeInternships: 360,
-      topSkills: ['Python for Healthcare', 'Sensor Instrumentation', 'SQL Databases'],
-      criticalGaps: ['Machine Learning (TensorFlow)', 'FHIR Healthcare Protocols']
+      name: 'Electrical Engg. — VLSI Specialisation',
+      totalStudents: 520,
+      avgReadinessScore: 72,
+      placementRate: 68,
+      activeInternships: 380,
+      topSkills: ['Verilog / VHDL', 'FPGA Prototyping', 'Embedded C', 'MATLAB / Simulink'],
+      criticalGaps: ['Industry EDA Tools (Cadence/Synopsys)', 'Formal Verification', 'AUTOSAR']
     },
     {
-      name: 'Computer Science & AI Engineering',
+      name: 'AI & Data Science (AID)',
       totalStudents: 560,
-      avgReadinessScore: 71,
-      placementRate: 81,
-      activeInternships: 470,
-      topSkills: ['Data Structures & Algorithms', 'React.js', 'Python'],
-      criticalGaps: ['Cloud DevOps (AWS/Docker)', 'Deep Learning Frameworks']
+      avgReadinessScore: 70,
+      placementRate: 73,
+      activeInternships: 460,
+      topSkills: ['Python', 'Machine Learning', 'Pandas & NumPy', 'SQL & Data Pipelines'],
+      criticalGaps: ['MLOps & Model Deployment', 'CUDA & GPU Programming', 'Cloud (AWS / GCP)']
     },
     {
-      name: 'Pharmaceutical Technology & Biotechnology',
-      totalStudents: 320,
-      avgReadinessScore: 68,
-      placementRate: 75,
-      activeInternships: 250,
-      topSkills: ['Chromatography', 'Drug Formulation', 'Bioinformatics'],
-      criticalGaps: ['Automated Quality Inspection', 'Statistical Process Control']
+      name: 'Mechanical & Robotics Engineering',
+      totalStudents: 680,
+      avgReadinessScore: 65,
+      placementRate: 62,
+      activeInternships: 410,
+      topSkills: ['CAD (SolidWorks / CATIA)', 'MATLAB / Simulink', 'FEM Analysis'],
+      criticalGaps: ['ROS & Motion Planning', 'Embedded C for ARM', 'Control Systems Implementation']
     }
   ],
   industrySkillTrends: [
     {
       skill: 'Python & Data Analytics',
       industryDemandPercent: 92,
-      curriculumCoveragePercent: 80,
+      curriculumCoveragePercent: 82,
       gapStatus: 'Aligned'
     },
     {
-      skill: 'Machine Learning / Deep Learning',
-      industryDemandPercent: 88,
-      curriculumCoveragePercent: 55,
+      skill: 'Machine Learning / Deep Learning (TensorFlow / PyTorch)',
+      industryDemandPercent: 90,
+      curriculumCoveragePercent: 52,
       gapStatus: 'Critical Gap'
     },
     {
-      skill: 'Cloud Computing & Docker Containers',
-      industryDemandPercent: 84,
-      curriculumCoveragePercent: 48,
-      gapStatus: 'Critical Gap'
-    },
-    {
-      skill: 'Healthcare Data Informatics & EHR Protocols',
+      skill: 'CUDA & GPU Accelerated Computing',
       industryDemandPercent: 78,
-      curriculumCoveragePercent: 50,
+      curriculumCoveragePercent: 28,
+      gapStatus: 'Critical Gap'
+    },
+    {
+      skill: 'Cloud (AWS / GCP) & Docker/Kubernetes',
+      industryDemandPercent: 86,
+      curriculumCoveragePercent: 45,
+      gapStatus: 'Critical Gap'
+    },
+    {
+      skill: 'Verilog / VHDL & FPGA Design',
+      industryDemandPercent: 74,
+      curriculumCoveragePercent: 68,
       gapStatus: 'Moderate Gap'
     },
     {
-      skill: 'Full Stack Web (React, Node, APIs)',
-      industryDemandPercent: 82,
-      curriculumCoveragePercent: 75,
+      skill: 'Data Structures & Algorithms (DSA)',
+      industryDemandPercent: 88,
+      curriculumCoveragePercent: 84,
       gapStatus: 'Aligned'
     },
     {
-      skill: 'Soft Skills: Technical Communication & Agility',
-      industryDemandPercent: 85,
-      curriculumCoveragePercent: 70,
+      skill: 'Technical Communication & Research Writing',
+      industryDemandPercent: 82,
+      curriculumCoveragePercent: 72,
       gapStatus: 'Aligned'
     }
   ]

@@ -1,6 +1,7 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
+  darkMode: 'class',
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -8,42 +9,50 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Plus Jakarta Sans', 'Inter', 'system-ui', 'sans-serif'],
+      },
       colors: {
-        brand: {
-          50: '#f5f7ff',
-          100: '#ebf0fe',
-          200: '#dbe4fd',
-          300: '#bdcdfb',
-          400: '#93acf7',
-          500: '#6384f1',
-          600: '#4361ee',
-          700: '#344bc7',
-          800: '#2b3ca0',
-          900: '#26347f',
-          950: '#161d49',
+        // Institutional accent palette
+        navy: {
+          50: '#eff6ff',
+          100: '#dbeafe',
+          200: '#bfdbfe',
+          300: '#93c5fd',
+          400: '#60a5fa',
+          500: '#3b82f6',
+          600: '#2563eb',
+          700: '#1d4ed8',
+          800: '#1e40af',
+          900: '#1e3a8a',
+          950: '#172554',
         },
+        institutional: {
+          navy: '#1d4ed8',
+          'navy-hover': '#1e40af',
+          green: '#047857',
+          'green-hover': '#065f46',
+          canvas: '#f8fafc',
+          card: '#ffffff',
+          'border-subtle': '#e2e8f0',
+          'border-prominent': '#cbd5e1',
+        },
+        // Canvas & surface tokens
         surface: {
-          canvas: '#090a0f',
-          card: '#0f121a',
-          'card-hover': '#141824',
-          subtle: '#181d2c',
-          border: 'rgba(255, 255, 255, 0.08)',
-          'border-strong': 'rgba(255, 255, 255, 0.15)',
+          canvas: '#f8fafc',
+          card: '#ffffff',
+          hover: '#f1f5f9',
+          subtle: '#f8fafc',
         },
-        slate: {
-          850: '#121622',
-          900: '#0c0f17',
-          950: '#07090e',
-        }
       },
       boxShadow: {
-        'saas-card': '0 0 0 1px rgba(255, 255, 255, 0.06), 0 2px 8px -2px rgba(0, 0, 0, 0.4), 0 8px 24px -4px rgba(0, 0, 0, 0.3)',
-        'saas-hover': '0 0 0 1px rgba(255, 255, 255, 0.12), 0 4px 12px -2px rgba(0, 0, 0, 0.5), 0 12px 32px -4px rgba(0, 0, 0, 0.4)',
-        'saas-sm': '0 0 0 1px rgba(255, 255, 255, 0.08), 0 1px 2px 0 rgba(0, 0, 0, 0.3)',
+        'enterprise-card': '0 1px 3px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04)',
+        'enterprise-hover': '0 4px 12px rgba(15, 23, 42, 0.08)',
+        'enterprise-modal': '0 20px 60px rgba(15, 23, 42, 0.16)',
       },
       borderRadius: {
-        'saas': '14px',
-      }
+        'enterprise': '12px',
+      },
     },
   },
   plugins: [],

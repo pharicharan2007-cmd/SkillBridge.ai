@@ -1,9 +1,9 @@
 [
   {
     "id": "std-101",
-    "name": "Rohan Sharma",
-    "email": "rohan.sharma@institution.edu.in",
-    "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=256",
+    "name": "Arjun Mehta",
+    "email": "arjun.mehta@dtu.ac.in",
+    "avatar": "https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=crop&q=80&w=256",
     "college": "Delhi Technological University (DTU)",
     "institution": "Delhi Technological University (DTU)",
     "degree": "B.Tech",
@@ -13,68 +13,57 @@
     "cgpa": 8.65,
     "readiness_score": 72,
     "readinessScore": 72,
-    "target_role": "AI/ML Engineer",
-    "targetRole": "AI/ML Engineer",
-    "interests": ["Artificial Intelligence", "Data Engineering", "Full Stack Development"],
-    "careerInterests": ["Artificial Intelligence", "Data Engineering", "Full Stack Development"],
+    "target_role": "ML Research Engineer",
+    "targetRole": "ML Research Engineer",
+    "interests": ["Machine Learning", "Computer Vision", "Embedded AI"],
+    "careerInterests": ["Machine Learning", "Computer Vision", "Embedded AI"],
     "assessmentCompleted": true,
     "lastAssessmentDate": "2026-08-28",
     "skills": [
       { "id": "sk-1", "name": "Python", "category": "Technical", "level": 85, "verified": true, "demandLevel": "Critical" },
-      { "id": "sk-2", "name": "Machine Learning", "category": "Technical", "level": 75, "verified": true, "demandLevel": "Critical" },
-      { "id": "sk-3", "name": "SQL", "category": "Technical", "level": 80, "verified": true, "demandLevel": "High" },
-      { "id": "sk-4", "name": "TensorFlow / PyTorch", "category": "Technical", "level": 40, "verified": false, "demandLevel": "Critical" },
-      { "id": "sk-5", "name": "React.js", "category": "Technical", "level": 88, "verified": true, "demandLevel": "High" },
-      { "id": "sk-6", "name": "TypeScript", "category": "Technical", "level": 82, "verified": true, "demandLevel": "High" },
-      { "id": "sk-9", "name": "Data Structures & Algorithms", "category": "Problem Solving", "level": 78, "verified": true, "demandLevel": "High" },
-      { "id": "sk-10", "name": "Git & GitHub", "category": "Digital Skills", "level": 90, "verified": true, "demandLevel": "Critical" },
-      { "id": "sk-16", "name": "Problem Solving", "category": "Problem Solving", "level": 80, "verified": true, "demandLevel": "Critical" },
+      { "id": "sk-2", "name": "Machine Learning", "category": "Technical", "level": 74, "verified": true, "demandLevel": "Critical" },
+      { "id": "sk-3", "name": "SQL & Data Pipelines", "category": "Technical", "level": 80, "verified": true, "demandLevel": "High" },
+      { "id": "sk-4", "name": "TensorFlow / PyTorch", "category": "Technical", "level": 42, "verified": false, "demandLevel": "Critical" },
+      { "id": "sk-5", "name": "CUDA & GPU Programming", "category": "Technical", "level": 35, "verified": false, "demandLevel": "High" },
+      { "id": "sk-9", "name": "Data Structures & Algorithms", "category": "Problem Solving", "level": 80, "verified": true, "demandLevel": "High" },
+      { "id": "sk-10", "name": "Git & Linux", "category": "Digital Skills", "level": 90, "verified": true, "demandLevel": "Critical" },
+      { "id": "sk-11", "name": "C++", "category": "Technical", "level": 76, "verified": true, "demandLevel": "High" },
+      { "id": "sk-16", "name": "Problem Solving", "category": "Problem Solving", "level": 82, "verified": true, "demandLevel": "Critical" },
       { "id": "sk-17", "name": "Technical Communication", "category": "Soft Skills", "level": 75, "verified": true, "demandLevel": "High" },
-      { "id": "sk-24", "name": "Cloud Computing (AWS)", "category": "Digital Skills", "level": 55, "verified": false, "demandLevel": "High" },
-      { "id": "sk-25", "name": "System Design", "category": "Digital Skills", "level": 50, "verified": false, "demandLevel": "High" },
-      { "id": "sk-30", "name": "Prompt Engineering", "category": "Technical", "level": 78, "verified": true, "demandLevel": "Critical" },
-      { "id": "sk-31", "name": "Pandas & NumPy", "category": "Technical", "level": 82, "verified": true, "demandLevel": "High" }
+      { "id": "sk-24", "name": "Distributed Systems", "category": "Digital Skills", "level": 48, "verified": false, "demandLevel": "High" },
+      { "id": "sk-25", "name": "Pandas & NumPy", "category": "Technical", "level": 84, "verified": true, "demandLevel": "High" },
+      { "id": "sk-30", "name": "Research Methodology", "category": "Soft Skills", "level": 70, "verified": true, "demandLevel": "High" }
     ],
     "top_gaps": [
       {
         "skillId": "sk-4",
         "skillName": "TensorFlow / PyTorch",
         "category": "Technical",
-        "currentLevel": 40,
+        "currentLevel": 42,
         "requiredLevel": 80,
+        "gapPercentage": 47,
+        "priority": "Critical",
+        "recommendedAction": "Complete NPTEL Deep Learning course (IIT Madras) & implement ResNet-50 on ISRO dataset project."
+      },
+      {
+        "skillId": "sk-5",
+        "skillName": "CUDA & GPU Programming",
+        "category": "Technical",
+        "currentLevel": 35,
+        "requiredLevel": 70,
         "gapPercentage": 50,
         "priority": "Critical",
-        "recommendedAction": "Complete Deep Learning Specialization on Coursera & build a CNN project."
+        "recommendedAction": "Complete NVIDIA DLI CUDA Fundamentals & run model training on DTU GPU lab cluster."
       },
       {
         "skillId": "sk-24",
-        "skillName": "Cloud Computing (AWS)",
+        "skillName": "Distributed Systems",
         "category": "Digital Skills",
-        "currentLevel": 55,
+        "currentLevel": 48,
         "requiredLevel": 75,
-        "gapPercentage": 27,
-        "priority": "High",
-        "recommendedAction": "Practice AWS EC2, S3 & SageMaker deployment labs."
-      },
-      {
-        "skillId": "sk-25",
-        "skillName": "System Design",
-        "category": "Digital Skills",
-        "currentLevel": 50,
-        "requiredLevel": 75,
-        "gapPercentage": 33,
-        "priority": "High",
-        "recommendedAction": "Study Microservices & API gateway architecture principles."
-      },
-      {
-        "skillId": "sk-8",
-        "skillName": "Docker & Containerization",
-        "category": "Technical",
-        "currentLevel": 45,
-        "requiredLevel": 70,
         "gapPercentage": 36,
-        "priority": "Medium",
-        "recommendedAction": "Containerize a FastAPI + React project using Docker Compose."
+        "priority": "High",
+        "recommendedAction": "Study MIT 6.824 Distributed Systems lecture series & implement Raft consensus algorithm."
       }
     ],
     "topGaps": [
@@ -82,102 +71,95 @@
         "skillId": "sk-4",
         "skillName": "TensorFlow / PyTorch",
         "category": "Technical",
-        "currentLevel": 40,
+        "currentLevel": 42,
         "requiredLevel": 80,
+        "gapPercentage": 47,
+        "priority": "Critical",
+        "recommendedAction": "Complete NPTEL Deep Learning course (IIT Madras) & implement ResNet-50 on ISRO dataset project."
+      },
+      {
+        "skillId": "sk-5",
+        "skillName": "CUDA & GPU Programming",
+        "category": "Technical",
+        "currentLevel": 35,
+        "requiredLevel": 70,
         "gapPercentage": 50,
         "priority": "Critical",
-        "recommendedAction": "Complete Deep Learning Specialization on Coursera & build a CNN project."
+        "recommendedAction": "Complete NVIDIA DLI CUDA Fundamentals & run model training on DTU GPU lab cluster."
       },
       {
         "skillId": "sk-24",
-        "skillName": "Cloud Computing (AWS)",
+        "skillName": "Distributed Systems",
         "category": "Digital Skills",
-        "currentLevel": 55,
+        "currentLevel": 48,
         "requiredLevel": 75,
-        "gapPercentage": 27,
-        "priority": "High",
-        "recommendedAction": "Practice AWS EC2, S3 & SageMaker deployment labs."
-      },
-      {
-        "skillId": "sk-25",
-        "skillName": "System Design",
-        "category": "Digital Skills",
-        "currentLevel": 50,
-        "requiredLevel": 75,
-        "gapPercentage": 33,
-        "priority": "High",
-        "recommendedAction": "Study Microservices & API gateway architecture principles."
-      },
-      {
-        "skillId": "sk-8",
-        "skillName": "Docker & Containerization",
-        "category": "Technical",
-        "currentLevel": 45,
-        "requiredLevel": 70,
         "gapPercentage": 36,
-        "priority": "Medium",
-        "recommendedAction": "Containerize a FastAPI + React project using Docker Compose."
+        "priority": "High",
+        "recommendedAction": "Study MIT 6.824 Distributed Systems lecture series & implement Raft consensus algorithm."
       }
     ],
     "certifications": [
-      { "id": "cert-1", "title": "Deep Learning Fundamentals", "issuer": "NPTEL / IIT Madras", "issueDate": "2026-03", "verified": true },
-      { "id": "cert-2", "title": "AWS Cloud Practitioner", "issuer": "Amazon Web Services", "issueDate": "2025-11", "verified": true },
-      { "id": "cert-3", "title": "Data Structures with C++", "issuer": "Coursera", "issueDate": "2025-06", "verified": true }
+      { "id": "cert-1", "title": "NPTEL Deep Learning (IIT Madras)", "issuer": "NPTEL / IIT Madras", "issueDate": "2026-04", "verified": true },
+      { "id": "cert-2", "title": "GATE 2026 Qualified — CS/IT", "issuer": "IIT Bombay (GATE)", "issueDate": "2026-03", "verified": true },
+      { "id": "cert-3", "title": "AWS Certified Cloud Practitioner", "issuer": "Amazon Web Services", "issueDate": "2025-11", "verified": true }
     ],
     "projects": [
       {
         "id": "proj-1",
-        "title": "End-to-End Multimodal Emotion Classifier",
-        "techStack": ["Python", "PyTorch", "FastAPI"],
-        "description": "Trained CNN & Transformer models on facial and audio inputs with 91% accuracy."
+        "title": "Spectral Crop Disease Classifier",
+        "techStack": ["Python", "PyTorch", "ResNet-50", "ISRO LISS-IV Dataset"],
+        "description": "Trained ResNet-50 on ISRO multispectral imagery to detect wheat rust with 88.4% validation accuracy. Presented at DTU Tech Fest 2026."
       },
       {
         "id": "proj-2",
-        "title": "Real-Time Collaborative Code Editor",
-        "techStack": ["React", "TypeScript", "WebSocket"],
-        "description": "Built interactive coding platform with syntax highlighting and live state synchronization."
+        "title": "RISC-V Pipelined Processor",
+        "techStack": ["VHDL", "ModelSim", "FPGA Artix-7"],
+        "description": "Implemented 5-stage pipelined RISC-V RV32I processor on Artix-7 FPGA with hazard detection and branch prediction."
       }
     ]
   },
   {
     "id": "std-102",
-    "name": "Priya Patel",
-    "email": "priya.patel@institution.edu.in",
+    "name": "Meera Krishnaswamy",
+    "email": "meera.k@iitd.ac.in",
     "avatar": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=256",
-    "college": "IIT Bombay",
-    "institution": "IIT Bombay",
+    "college": "IIT Delhi",
+    "institution": "Indian Institute of Technology Delhi (IIT Delhi)",
     "degree": "B.Tech",
-    "branch": "Computer Science",
+    "branch": "Electrical Engineering (VLSI Specialisation)",
     "year": 4,
     "semester": 7,
     "cgpa": 9.10,
-    "readiness_score": 85,
-    "readinessScore": 85,
-    "target_role": "Full Stack Developer",
-    "targetRole": "Full Stack Developer",
-    "interests": ["Web Development", "Cloud Computing", "DevOps"],
-    "careerInterests": ["Web Development", "Cloud Computing", "DevOps"],
+    "readiness_score": 88,
+    "readinessScore": 88,
+    "target_role": "VLSI Design Engineer",
+    "targetRole": "VLSI Design Engineer",
+    "interests": ["VLSI Design", "Embedded Systems", "Signal Processing"],
+    "careerInterests": ["VLSI Design", "Embedded Systems", "Signal Processing"],
     "assessmentCompleted": true,
     "lastAssessmentDate": "2026-09-01",
     "skills": [
-      { "id": "sk-5", "name": "React.js", "category": "Technical", "level": 92, "verified": true, "demandLevel": "High" },
-      { "id": "sk-6", "name": "TypeScript", "category": "Technical", "level": 88, "verified": true, "demandLevel": "High" },
-      { "id": "sk-1", "name": "Python", "category": "Technical", "level": 80, "verified": true, "demandLevel": "Critical" },
-      { "id": "sk-3", "name": "SQL", "category": "Technical", "level": 85, "verified": true, "demandLevel": "High" },
-      { "id": "sk-10", "name": "Git & GitHub", "category": "Digital Skills", "level": 95, "verified": true, "demandLevel": "Critical" },
-      { "id": "sk-24", "name": "Cloud Computing (AWS)", "category": "Digital Skills", "level": 70, "verified": true, "demandLevel": "High" }
+      { "id": "sk-v1", "name": "Verilog / VHDL", "category": "Technical", "level": 88, "verified": true, "demandLevel": "Critical" },
+      { "id": "sk-v2", "name": "MATLAB / Simulink", "category": "Technical", "level": 84, "verified": true, "demandLevel": "High" },
+      { "id": "sk-v3", "name": "Embedded C", "category": "Technical", "level": 76, "verified": true, "demandLevel": "High" },
+      { "id": "sk-v4", "name": "PCB Design (Altium)", "category": "Technical", "level": 62, "verified": true, "demandLevel": "High" },
+      { "id": "sk-v5", "name": "FPGA Prototyping", "category": "Technical", "level": 80, "verified": true, "demandLevel": "Critical" },
+      { "id": "sk-v6", "name": "Signal Processing (DSP)", "category": "Technical", "level": 78, "verified": true, "demandLevel": "High" },
+      { "id": "sk-10", "name": "Git & Linux", "category": "Digital Skills", "level": 88, "verified": true, "demandLevel": "Critical" },
+      { "id": "sk-11", "name": "C++", "category": "Technical", "level": 70, "verified": true, "demandLevel": "High" }
     ],
     "top_gaps": [],
     "topGaps": [],
     "certifications": [
-      { "id": "cert-4", "title": "Meta Front-End Developer", "issuer": "Coursera", "issueDate": "2025-10", "verified": true }
+      { "id": "cert-4", "title": "CDAC VLSI Design Certificate", "issuer": "CDAC Pune", "issueDate": "2025-10", "verified": true },
+      { "id": "cert-5", "title": "NPTEL Digital Circuits & Systems (IIT Madras)", "issuer": "NPTEL / IIT Madras", "issueDate": "2025-08", "verified": true }
     ],
     "projects": [
       {
         "id": "proj-3",
-        "title": "Cloud-Native E-Commerce API",
-        "techStack": ["Next.js", "PostgreSQL", "Docker"],
-        "description": "Microservices-ready e-commerce core with Redis caching and Stripe checkout mock."
+        "title": "RISC-V SoC on Xilinx UltraScale+",
+        "techStack": ["Verilog", "Xilinx Vivado", "RISC-V", "AXI Bus"],
+        "description": "Designed a complete single-core RISC-V SoC with AXI4-Lite peripherals. Tape-out simulation at 250 MHz on UltraScale+ device."
       }
     ]
   }

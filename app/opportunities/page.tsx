@@ -6,7 +6,18 @@ import { useStudent } from '@/lib/context/StudentContext';
 import { OpportunityCard } from '@/components/opportunities/OpportunityCard';
 import { ApplyModal } from '@/components/opportunities/ApplyModal';
 import { Opportunity } from '@/types';
-import { Briefcase, Search, Filter, Sparkles, CheckCircle2, SlidersHorizontal } from 'lucide-react';
+import { Briefcase, Search, Bookmark } from 'lucide-react';
+
+const DOMAINS = [
+  'All',
+  'AI & Machine Learning',
+  'Software Engineering',
+  'VLSI & Embedded Systems',
+  'Data Engineering & Analytics',
+  'Cloud & DevOps',
+  'Robotics & Control Systems',
+  'Research Internship',
+];
 
 export default function OpportunitiesPage() {
   const { opportunities, applications, savedOpportunityIds, toggleSaveOpportunity } = useStudent();
@@ -15,112 +26,117 @@ export default function OpportunitiesPage() {
   const [selectedOpportunity, setSelectedOpportunity] = useState<Opportunity | null>(null);
   const [activeTab, setActiveTab] = useState<'all' | 'saved'>('all');
 
-  const domains = ['All', 'Artificial Intelligence', 'Software Engineering', 'Data Analytics', 'Cloud & Infrastructure', 'Backend Development', 'Cybersecurity'];
-
   const filteredOpportunities = opportunities.filter(opp => {
-    // Search match
-    const matchesSearch = 
+    const matchesSearch =
       opp.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       opp.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
       opp.requiredSkills.some(s => s.toLowerCase().includes(searchTerm.toLowerCase()));
-
-    // Domain filter
     const matchesDomain = selectedDomain === 'All' || opp.domain === selectedDomain;
-
-    // Saved filter
     const matchesSaved = activeTab === 'all' || savedOpportunityIds.includes(opp.id);
-
     return matchesSearch && matchesDomain && matchesSaved;
   });
 
   return (
     <AppLayout>
-      
-      {/* Top Banner */}
-      <div className="bg-slate-900/90 border border-slate-800 rounded-3xl p-6 sm:p-8 space-y-4 shadow-xl">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div className="space-y-1">
-            <div className="inline-flex items-center gap-2 bg-indigo-950 border border-indigo-800 px-3 py-1 rounded-full text-xs font-bold text-indigo-300">
-              <Briefcase className="w-3.5 h-3.5 text-indigo-400" />
-              <span>AI Match Engine</span>
+      <div className="space-y-6">
+
+        {/* Page Header */}
+        <div className="enterprise-card rounded-xl p-6 sm:p-7">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-5">
+            <div className="space-y-1">
+              <div className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-blue-800 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-900 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                <Briefcase className="w-3 h-3" />
+                <span>Matched Opportunities — Criteria-Based Ranking</span>
+              </div>
+              <h1 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">
+                Internships & Campus Roles
+              </h1>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Ranked by: <span className="font-semibold text-slate-700 dark:text-slate-300">60% Verified Skill Coverage + 20% Academic Eligibility (CGPA, branch, GATE) + 20% Career Alignment</span>
+              </p>
             </div>
-            <h1 className="text-2xl font-black text-white tracking-tight">AI Internship & Job Recommendations</h1>
-            <p className="text-xs text-slate-400">
-              Scored using weighted vector matching: <span className="font-semibold text-indigo-300">60% Skill Match + 20% Eligibility + 20% Career Interest</span>.
-            </p>
+
+            <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-1 rounded-lg text-xs font-semibold shrink-0">
+              <button
+                onClick={() => setActiveTab('all')}
+                className={`px-4 py-1.5 rounded-md transition ${activeTab === 'all' ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm border border-slate-200 dark:border-slate-700' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'}`}
+              >
+                All Roles ({opportunities.length})
+              </button>
+              <button
+                onClick={() => setActiveTab('saved')}
+                className={`px-4 py-1.5 rounded-md transition flex items-center gap-1.5 ${activeTab === 'saved' ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm border border-slate-200 dark:border-slate-700' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'}`}
+              >
+                <Bookmark className="w-3 h-3" />
+                Saved ({savedOpportunityIds.length})
+              </button>
+            </div>
           </div>
 
-          <div className="flex items-center gap-1 bg-slate-950 p-1 rounded-xl border border-slate-800 text-xs font-semibold shrink-0">
-            <button
-              onClick={() => setActiveTab('all')}
-              className={`px-4 py-2 rounded-lg transition ${activeTab === 'all' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-slate-200'}`}
-            >
-              All Roles ({opportunities.length})
-            </button>
-            <button
-              onClick={() => setActiveTab('saved')}
-              className={`px-4 py-2 rounded-lg transition ${activeTab === 'saved' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-slate-200'}`}
-            >
-              Saved ({savedOpportunityIds.length})
-            </button>
-          </div>
-        </div>
-
-        {/* Filter Controls Bar */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2 border-t border-slate-800/80">
-          <div className="relative sm:col-span-2">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-            <input
-              type="text"
-              placeholder="Search by job title, company, or skill (e.g., Python, React, AWS)..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-700 rounded-xl pl-9 pr-4 py-2.5 text-xs text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder-slate-500"
-            />
-          </div>
-
-          <div>
+          {/* Search & Filter */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+            <div className="relative sm:col-span-2">
+              <Search className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                placeholder="Search by role, company, or skill (e.g., TensorFlow, Verilog, Python)..."
+                value={searchTerm}
+                onChange={e => setSearchTerm(e.target.value)}
+                className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg pl-8 pr-4 py-2 text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 placeholder-slate-400 dark:placeholder-slate-500 transition"
+              />
+            </div>
             <select
               value={selectedDomain}
-              onChange={(e) => setSelectedDomain(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-700 text-slate-200 text-xs font-semibold rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer"
+              onChange={e => setSelectedDomain(e.target.value)}
+              className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 cursor-pointer"
             >
-              {domains.map(d => (
+              {DOMAINS.map(d => (
                 <option key={d} value={d}>Domain: {d}</option>
               ))}
             </select>
           </div>
         </div>
-      </div>
 
-      {/* Opportunity Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredOpportunities.map(opp => (
-          <OpportunityCard
-            key={opp.id}
-            opportunity={opp}
-            onApply={(o) => setSelectedOpportunity(o)}
-            isSaved={savedOpportunityIds.includes(opp.id)}
-            onToggleSave={toggleSaveOpportunity}
-            isApplied={applications.some(a => a.opportunityId === opp.id)}
-          />
-        ))}
-      </div>
-
-      {filteredOpportunities.length === 0 && (
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-12 text-center text-slate-400 space-y-2">
-          <p className="text-base font-bold text-slate-300">No opportunities match your current filters.</p>
-          <p className="text-xs">Try resetting your search query or domain filter.</p>
+        {/* Results Count */}
+        <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+          <span>
+            Showing <strong className="text-slate-800 dark:text-slate-200">{filteredOpportunities.length}</strong> of {opportunities.length} opportunities
+            {selectedDomain !== 'All' && <span> in <strong>{selectedDomain}</strong></span>}
+          </span>
+          {searchTerm && (
+            <button onClick={() => setSearchTerm('')} className="text-blue-600 dark:text-blue-400 hover:underline font-semibold transition">
+              Clear search
+            </button>
+          )}
         </div>
-      )}
 
-      {/* Apply Modal Drawer */}
-      <ApplyModal
-        opportunity={selectedOpportunity}
-        onClose={() => setSelectedOpportunity(null)}
-        onSuccess={() => setSelectedOpportunity(null)}
-      />
+        {/* Opportunity Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {filteredOpportunities.map(opp => (
+            <OpportunityCard
+              key={opp.id}
+              opportunity={opp}
+              onApply={o => setSelectedOpportunity(o)}
+              isSaved={savedOpportunityIds.includes(opp.id)}
+              onToggleSave={toggleSaveOpportunity}
+              isApplied={applications.some(a => a.opportunityId === opp.id)}
+            />
+          ))}
+        </div>
 
+        {filteredOpportunities.length === 0 && (
+          <div className="enterprise-card rounded-xl p-12 text-center space-y-2">
+            <p className="text-sm font-bold text-slate-700 dark:text-slate-300">No opportunities match your current filters.</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400">Try resetting the search query or switching domain.</p>
+          </div>
+        )}
+
+        <ApplyModal
+          opportunity={selectedOpportunity}
+          onClose={() => setSelectedOpportunity(null)}
+          onSuccess={() => setSelectedOpportunity(null)}
+        />
+      </div>
     </AppLayout>
   );
 }

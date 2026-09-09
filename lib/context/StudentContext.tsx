@@ -55,6 +55,10 @@ interface StudentContextType {
   // Student Portfolio Actions
   addProjectToPortfolio: (project: Omit<StudentPortfolioProject, 'id'>) => void;
   
+  // Registration & Verification Actions
+  registerStudent: (data: Partial<StudentProfile>) => StudentProfile;
+  verifyStudentCredential: (studentId: string) => void;
+  
   // Mentorship & Collaboration Actions
   bookMentorshipSlot: (mentorId: string, slot: string) => boolean;
 }
@@ -74,59 +78,59 @@ export const StudentProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [applications, setApplications] = useState<ApplicationRecord[]>([
     {
       id: 'app-1',
-      opportunityId: 'opp-2',
-      opportunityTitle: 'Full Stack Web Developer Intern',
-      company: 'NextGen Systems',
-      studentName: 'Rohan Sharma',
-      studentEmail: 'rohan.sharma@institution.edu.in',
+      opportunityId: 'opp-3',
+      opportunityTitle: 'Software Engineer Trainee — TCS iON Campus Programme',
+      company: 'Tata Consultancy Services (TCS)',
+      studentName: 'Arjun Mehta',
+      studentEmail: 'arjun.mehta@dtu.ac.in',
       studentBranch: 'Computer Science and Engineering',
       studentCgpa: 8.65,
       appliedDate: '2026-08-30',
       status: 'Interview Scheduled',
-      matchScoreAtApplication: 84,
-      notes: 'Submitted customized GitHub portfolio link and clinical FHIR project demo.',
+      matchScoreAtApplication: 82,
+      notes: 'TCS NQT Score: 78/100 (above 60-percentile cutoff). Matched: Python ✓ DSA ✓ SQL ✓ Git ✓. Technical Round 1 completed Sept 04. Final Interview: Sept 14.',
       timeline: [
         { step: 'Application Submitted', date: '2026-08-30', completed: true },
-        { step: 'Resume Screening', date: '2026-09-01', completed: true },
+        { step: 'TCS NQT Score Verified (78/100)', date: '2026-09-01', completed: true },
         { step: 'Technical Round 1', date: '2026-09-04', completed: true },
-        { step: 'Final Interview', date: '2026-09-08', completed: false },
+        { step: 'Final HR Interview', date: '2026-09-14', completed: false },
       ]
     },
     {
       id: 'app-2',
-      opportunityId: 'opp-10',
-      opportunityTitle: 'Product Management Intern',
-      company: 'InnoVenture Labs',
-      studentName: 'Rohan Sharma',
-      studentEmail: 'rohan.sharma@institution.edu.in',
+      opportunityId: 'opp-5',
+      opportunityTitle: 'Research Associate — AI4Science Lab',
+      company: 'IIT Delhi Department of CSE',
+      studentName: 'Arjun Mehta',
+      studentEmail: 'arjun.mehta@dtu.ac.in',
       studentBranch: 'Computer Science and Engineering',
       studentCgpa: 8.65,
-      appliedDate: '2026-08-20',
+      appliedDate: '2026-08-22',
       status: 'Under Review',
-      matchScoreAtApplication: 76,
-      notes: 'Attached case study design doc.',
+      matchScoreAtApplication: 74,
+      notes: 'Matched: Python ✓ ML ✓ Research Methodology ✓ Git ✓. Missing: TensorFlow/PyTorch (mandatory — flagged). GATE Qualified: Yes. Prof. recommendation letter pending.',
       timeline: [
-        { step: 'Application Submitted', date: '2026-08-20', completed: true },
-        { step: 'Profile Verification', date: '2026-08-25', completed: true },
-        { step: 'Recruiter Review', date: '2026-09-02', completed: true }
+        { step: 'Application Submitted', date: '2026-08-22', completed: true },
+        { step: 'Portfolio & Credentials Verified', date: '2026-08-26', completed: true },
+        { step: 'Faculty Shortlisting', date: '2026-09-03', completed: true }
       ]
     },
     {
       id: 'app-3',
       opportunityId: 'opp-1',
-      opportunityTitle: 'AI/ML Research Intern - Healthcare Automation',
-      company: 'HealthAnalytics India',
-      studentName: 'Ananya Verma',
-      studentEmail: 'ananya.verma@institution.edu.in',
-      studentBranch: 'AI & Data Science',
-      studentCgpa: 8.9,
-      appliedDate: '2026-09-01',
+      opportunityTitle: 'ML Research Intern — Remote Sensing & Earth Observation',
+      company: 'ISRO Space Applications Centre (SAC)',
+      studentName: 'Meera Krishnaswamy',
+      studentEmail: 'meera.k@iitd.ac.in',
+      studentBranch: 'Electrical Engineering (VLSI Specialisation)',
+      studentCgpa: 9.10,
+      appliedDate: '2026-09-02',
       status: 'Shortlisted',
-      matchScoreAtApplication: 91,
-      notes: 'Specializes in NLP and medical knowledge graphs.',
+      matchScoreAtApplication: 88,
+      notes: 'Matched: Python ✓ ML Fundamentals ✓ Git ✓ Pandas ✓. PyTorch: partial (42%) — under review by ISRO SAC scientist. CGPA 9.10 ≥ 8.0 ✓.',
       timeline: [
-        { step: 'Application Submitted', date: '2026-09-01', completed: true },
-        { step: 'Candidate Shortlisted', date: '2026-09-05', completed: true }
+        { step: 'Application Submitted', date: '2026-09-02', completed: true },
+        { step: 'Candidate Shortlisted by SAC', date: '2026-09-06', completed: true }
       ]
     }
   ]);
@@ -152,6 +156,19 @@ export const StudentProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
       const savedFacApps = localStorage.getItem('skillbridge_faculty_applications');
       if (savedFacApps) setFacultyApplications(JSON.parse(savedFacApps));
+
+      const savedStudent = localStorage.getItem('skillbridge_registered_student');
+      if (savedStudent) {
+        const parsed = JSON.parse(savedStudent);
+        setStudent(parsed);
+        setAllStudents(prev => {
+          const exists = prev.some(s => s.id === parsed.id);
+          if (exists) {
+            return prev.map(s => s.id === parsed.id ? parsed : s);
+          }
+          return [parsed, ...prev];
+        });
+      }
     } catch (e) {
       console.warn('LocalStorage error or not available', e);
     }
@@ -244,14 +261,21 @@ export const StudentProvider: React.FC<{ children: React.ReactNode }> = ({ child
       }
     ];
 
-    setStudent(prev => ({
-      ...prev,
+    const updated = {
+      ...student,
       readinessScore: newReadinessScore,
       assessmentCompleted: true,
       lastAssessmentDate: new Date().toISOString().split('T')[0],
       skills: updatedSkills,
       topGaps: newGaps
-    }));
+    };
+
+    setStudent(updated);
+    setAllStudents(prev => prev.map(s => s.id === updated.id ? updated : s));
+
+    try {
+      localStorage.setItem('skillbridge_registered_student', JSON.stringify(updated));
+    } catch (e) {}
   };
 
   const applyForOpportunity = (opportunityId: string, notes?: string): boolean => {
@@ -361,10 +385,10 @@ export const StudentProvider: React.FC<{ children: React.ReactNode }> = ({ child
       opportunityTitle: opp.title,
       organization: opp.organization,
       type: opp.type,
-      facultyName: 'Dr. Sunita Deshmukh',
+      facultyName: 'Dr. Priya Raghunathan',
       facultyDesignation: 'Associate Professor',
-      department: 'Pharmacognosy & Phytochemistry',
-      institution: 'All India Institute of Ayurveda, New Delhi',
+      department: 'Electrical Engineering (EED)',
+      institution: 'Delhi Technological University, New Delhi',
       appliedDate: new Date().toISOString().split('T')[0],
       status: 'Proposal Submitted',
       proposalNote
@@ -389,6 +413,79 @@ export const StudentProvider: React.FC<{ children: React.ReactNode }> = ({ child
       ...prev,
       projects: [newProject, ...(prev.projects || [])]
     }));
+  };
+
+  // Registration: Create new student and set as active session
+  const registerStudent = (data: Partial<StudentProfile>): StudentProfile => {
+    const newId = `std-${Date.now()}`;
+    const newStudent: StudentProfile = {
+      id: newId,
+      name: data.name || 'New Student',
+      email: data.email || 'student@dtu.ac.in',
+      avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=256',
+      institution: data.institution || data.college || 'Delhi Technological University (DTU)',
+      college: data.college || data.institution || 'Delhi Technological University (DTU)',
+      degree: data.degree || 'B.Tech',
+      branch: data.branch || 'Computer Science and Engineering',
+      year: data.year || 3,
+      semester: data.semester || 6,
+      cgpa: data.cgpa || 8.5,
+      readinessScore: data.readinessScore || 52,
+      targetRole: data.targetRole || 'Software Engineer',
+      careerInterests: data.careerInterests || ['Software Engineering', 'Cloud & Systems'],
+      enrollmentNumber: data.enrollmentNumber || '2K23/CO/201',
+      graduationYear: data.graduationYear || 2026,
+      verificationStatus: 'Pending',
+      verificationType: 'COLLEGE_ID',
+      collegeIdProof: data.collegeIdProof || 'student_id_card.pdf',
+      assessmentCompleted: false,
+      skills: data.skills && data.skills.length > 0 ? data.skills : [
+        { id: 'sk-1', name: 'Python', category: 'Technical', level: 75, verified: false, demandLevel: 'Critical' },
+        { id: 'sk-9', name: 'Data Structures & Algorithms', category: 'Technical', level: 70, verified: false, demandLevel: 'High' },
+        { id: 'sk-5', name: 'React.js', category: 'Technical', level: 68, verified: false, demandLevel: 'High' }
+      ],
+      topGaps: [
+        {
+          skillId: 'sk-24',
+          skillName: 'Cloud Computing (AWS)',
+          category: 'Digital Skills',
+          currentLevel: 40,
+          requiredLevel: 75,
+          gapPercentage: 35,
+          priority: 'Critical',
+          recommendedAction: 'Complete AWS Academy Cloud Foundations & build deployment project.'
+        }
+      ],
+      certifications: [],
+      projects: []
+    };
+
+    setStudent(newStudent);
+    setAllStudents(prev => [newStudent, ...prev]);
+
+    try {
+      localStorage.setItem('skillbridge_registered_student', JSON.stringify(newStudent));
+    } catch (e) {}
+
+    return newStudent;
+  };
+
+  // Institution TPO: Approve student verification
+  const verifyStudentCredential = (studentId: string) => {
+    setAllStudents(prev => prev.map(s => {
+      if (s.id === studentId) {
+        return { ...s, verificationStatus: 'Verified' as const };
+      }
+      return s;
+    }));
+
+    if (student.id === studentId) {
+      const updated = { ...student, verificationStatus: 'Verified' as const };
+      setStudent(updated);
+      try {
+        localStorage.setItem('skillbridge_registered_student', JSON.stringify(updated));
+      } catch (e) {}
+    }
   };
 
   // Mentorship Booking
@@ -422,6 +519,8 @@ export const StudentProvider: React.FC<{ children: React.ReactNode }> = ({ child
         addLearningResource,
         applyFacultyOpportunity,
         addProjectToPortfolio,
+        registerStudent,
+        verifyStudentCredential,
         bookMentorshipSlot
       }}
     >

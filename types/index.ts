@@ -30,7 +30,7 @@ export interface StudentPortfolioProject {
   githubUrl?: string;
   liveDemoUrl?: string;
   verifiedBy?: string;
-  date: string;
+  date?: string;
 }
 
 export interface StudentProfile {
@@ -39,13 +39,20 @@ export interface StudentProfile {
   email: string;
   avatar: string;
   institution: string;
+  college?: string;
   degree: string;
   branch: string;
+  year?: number;
   semester: number;
   cgpa: number;
   readinessScore: number; // 0 to 100
   targetRole: string;
   careerInterests: string[];
+  enrollmentNumber?: string;
+  graduationYear?: number;
+  verificationStatus?: 'Unverified' | 'Pending' | 'Verified';
+  verificationType?: 'COLLEGE_ID' | 'MARKSHEET' | 'EXAM_VERIFIED';
+  collegeIdProof?: string;
   skills: Skill[];
   topGaps: SkillGapItem[];
   assessmentCompleted: boolean;

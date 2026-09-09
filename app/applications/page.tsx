@@ -7,178 +7,176 @@ import { useStudent } from '@/lib/context/StudentContext';
 import { 
   Send, 
   CheckCircle2, 
+  Briefcase, 
   Clock, 
-  Building, 
-  Sparkles, 
-  Calendar, 
-  FileText, 
-  ChevronRight, 
-  ArrowRight,
-  ShieldCheck
+  ArrowRight, 
 } from 'lucide-react';
 
-export default function ApplicationTrackingPage() {
+const statusPills: Record<string, string> = {
+  'Submitted': 'status-pill-blue',
+  'Under Review': 'status-pill-amber',
+  'Interview Scheduled': 'status-pill-purple',
+  'Shortlisted': 'status-pill-green',
+  'Offered': 'status-pill-green',
+  'Rejected': 'status-pill-red',
+};
+
+export default function ApplicationsPage() {
   const { applications } = useStudent();
-  const [selectedAppId, setSelectedAppId] = useState<string>(applications[0]?.id || '');
+  const [selectedAppId, setSelectedAppId] = useState<string | null>(
+    applications.length > 0 ? applications[0].id : null
+  );
 
   const selectedApp = applications.find(a => a.id === selectedAppId) || applications[0];
 
-  const statusColors: Record<string, string> = {
-    'Submitted': 'bg-blue-500/20 text-blue-300 border-blue-500/40',
-    'Under Review': 'bg-amber-500/20 text-amber-300 border-amber-500/40',
-    'Interview Scheduled': 'bg-purple-500/20 text-purple-300 border-purple-500/40',
-    'Shortlisted': 'bg-indigo-500/20 text-indigo-300 border-indigo-500/40',
-    'Offered': 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
-  };
-
   return (
     <AppLayout>
-      
-      {/* Top Banner */}
-      <div className="bg-slate-900/90 border border-slate-800 rounded-3xl p-6 sm:p-8 space-y-2 shadow-xl">
-        <div className="inline-flex items-center gap-2 bg-indigo-950 border border-indigo-800 px-3 py-1 rounded-full text-xs font-bold text-indigo-300">
-          <Send className="w-3.5 h-3.5 text-indigo-400" />
-          <span>Placement & Application Tracker</span>
-        </div>
-        <h1 className="text-2xl font-black text-white tracking-tight">Application Tracking & Interview Status</h1>
-        <p className="text-xs text-slate-400">Track real-time progress for all your submitted internships and job applications.</p>
-      </div>
+      <div className="space-y-6">
 
-      {applications.length === 0 ? (
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-12 text-center space-y-4">
-          <Send className="w-12 h-12 text-slate-600 mx-auto" />
-          <h3 className="text-xl font-bold text-white">No active applications yet</h3>
-          <p className="text-xs text-slate-400 max-w-sm mx-auto">
-            Browse matched opportunities on the portal and click "Apply Now" to start tracking your recruitment status!
-          </p>
-          <Link
-            href="/opportunities"
-            className="inline-flex items-center gap-2 bg-indigo-600 text-white px-6 py-2.5 rounded-xl text-xs font-bold shadow-lg shadow-indigo-600/30 hover:scale-105 transition"
-          >
-            <span>Explore Internships & Jobs</span>
-            <ArrowRight className="w-4 h-4" />
-          </Link>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          
-          {/* Applications List */}
-          <div className="bg-slate-900/90 border border-slate-800 rounded-3xl p-6 space-y-4 shadow-xl">
-            <h2 className="text-sm font-bold text-white uppercase tracking-wider flex items-center justify-between">
-              <span>Submitted Applications</span>
-              <span className="bg-indigo-950 text-indigo-400 border border-indigo-800 px-2.5 py-0.5 rounded-full text-xs">
-                {applications.length} Active
-              </span>
-            </h2>
-
-            <div className="space-y-3">
-              {applications.map(app => {
-                const isSelected = app.id === selectedApp?.id;
-                return (
-                  <button
-                    key={app.id}
-                    onClick={() => setSelectedAppId(app.id)}
-                    className={`w-full text-left p-4 rounded-2xl border transition-all duration-200 ${
-                      isSelected
-                        ? 'bg-gradient-to-r from-indigo-950 to-slate-900 border-indigo-500 ring-2 ring-indigo-500/40 text-white shadow-lg'
-                        : 'bg-slate-950/80 border-slate-800/80 text-slate-300 hover:border-slate-700'
-                    }`}
-                  >
-                    <div className="flex items-start justify-between gap-2 mb-2">
-                      <h3 className="text-sm font-bold text-white line-clamp-1">{app.opportunityTitle}</h3>
-                      <span className="bg-indigo-950 text-indigo-300 border border-indigo-800 text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0">
-                        {app.matchScoreAtApplication}%
-                      </span>
-                    </div>
-
-                    <div className="flex items-center justify-between text-xs text-slate-400">
-                      <span>{app.company}</span>
-                      <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${statusColors[app.status] || 'bg-slate-800 text-slate-300'}`}>
-                        {app.status}
-                      </span>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
+        {/* Page Header */}
+        <div className="enterprise-card rounded-xl p-6 sm:p-7">
+          <div className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-blue-800 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-900 px-2.5 py-0.5 rounded-full uppercase tracking-wider mb-2">
+            <Send className="w-3 h-3" />
+            <span>Placement Tracker</span>
           </div>
+          <h1 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
+            Application Status & Hiring Pipeline
+          </h1>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Real-time progress for submitted internships and campus hiring applications.</p>
+        </div>
 
-          {/* Selected Application Timeline & Detail Drawer */}
-          {selectedApp && (
-            <div className="lg:col-span-2 bg-slate-900/90 border border-slate-800 rounded-3xl p-6 sm:p-8 space-y-6 shadow-xl">
-              
-              {/* Header */}
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-800 pb-6">
-                <div>
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className={`px-3 py-1 rounded-full text-xs font-bold border ${statusColors[selectedApp.status]}`}>
-                      Status: {selectedApp.status}
-                    </span>
-                    <span className="text-xs text-slate-400">Applied on {selectedApp.appliedDate}</span>
-                  </div>
-                  <h2 className="text-xl font-bold text-white">{selectedApp.opportunityTitle}</h2>
-                  <p className="text-xs text-slate-400">{selectedApp.company}</p>
-                </div>
-
-                <div className="bg-slate-950 border border-slate-800 p-3 rounded-2xl text-center shrink-0">
-                  <span className="text-[10px] text-slate-400 block uppercase font-bold">Match Score</span>
-                  <span className="text-xl font-black text-indigo-400">{selectedApp.matchScoreAtApplication}%</span>
-                </div>
+        {applications.length === 0 ? (
+          <div className="enterprise-card rounded-xl p-12 text-center space-y-4">
+            <Send className="w-10 h-10 text-slate-300 dark:text-slate-600 mx-auto" />
+            <h3 className="text-base font-bold text-slate-700 dark:text-slate-200">No active applications yet</h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto leading-relaxed">
+              Browse matched opportunities and click "Apply" to begin tracking your recruitment status.
+            </p>
+            <Link
+              href="/opportunities"
+              className="inline-flex items-center gap-2 enterprise-btn-primary px-5 py-2 rounded-lg text-xs font-semibold"
+            >
+              <Briefcase className="w-3.5 h-3.5" />
+              <span>Browse Opportunities</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            {/* Applications List */}
+            <div className="enterprise-card rounded-xl p-5 space-y-3">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+                <h2 className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Submitted Applications</h2>
+                <span className="status-pill status-pill-blue">{applications.length} Active</span>
               </div>
 
-              {/* Progress Timeline */}
-              <div className="space-y-4">
-                <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Recruitment Pipeline Timeline</h3>
-
-                <div className="relative pl-6 space-y-6 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-800">
-                  {selectedApp.timeline.map((step, idx) => (
-                    <div key={idx} className="relative flex items-start gap-4">
-                      {/* Circle Dot */}
-                      <div className={`absolute -left-6 w-4 h-4 rounded-full border-2 flex items-center justify-center ${
-                        step.completed 
-                          ? 'bg-emerald-500 border-slate-900 text-white shadow-md shadow-emerald-500/50' 
-                          : 'bg-slate-900 border-slate-700'
-                      }`}>
-                        {step.completed && <CheckCircle2 className="w-3 h-3" />}
+              <div className="space-y-2">
+                {applications.map(app => {
+                  const isSelected = app.id === selectedApp?.id;
+                  return (
+                    <button
+                      key={app.id}
+                      onClick={() => setSelectedAppId(app.id)}
+                      className={`w-full text-left p-3.5 rounded-xl border transition-all ${
+                        isSelected
+                          ? 'bg-blue-50 dark:bg-blue-950/60 border-blue-400 dark:border-blue-600 ring-1 ring-blue-300 dark:ring-blue-800 shadow-sm'
+                          : 'bg-slate-50 dark:bg-slate-850 border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800'
+                      }`}
+                    >
+                      <div className="flex items-start justify-between gap-2 mb-1.5">
+                        <h3 className="text-xs font-bold text-slate-900 dark:text-white line-clamp-2 leading-tight">{app.opportunityTitle}</h3>
+                        <span className={`status-pill text-[10px] shrink-0 ${statusPills[app.status] || 'status-pill-slate'}`}>
+                          {app.status}
+                        </span>
                       </div>
+                      <div className="text-[11px] text-slate-500 dark:text-slate-400">{app.company} · {app.appliedDate}</div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
 
-                      <div className="bg-slate-950/80 border border-slate-800 rounded-xl p-3.5 flex-1 flex items-center justify-between text-xs">
-                        <div>
-                          <span className={`font-bold block ${step.completed ? 'text-white' : 'text-slate-400'}`}>
-                            {step.step}
-                          </span>
-                          <span className="text-[11px] text-slate-500">Scheduled / Completed: {step.date}</span>
+            {/* Application Detail Drawer */}
+            {selectedApp && (
+              <div className="lg:col-span-2 enterprise-card rounded-xl p-6 space-y-6">
+                
+                {/* Header */}
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-5 border-b border-slate-100 dark:border-slate-800">
+                  <div className="space-y-1.5">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className={`status-pill ${statusPills[selectedApp.status] || 'status-pill-slate'}`}>
+                        {selectedApp.status}
+                      </span>
+                      <span className="text-[11px] text-slate-500 dark:text-slate-400">Applied {selectedApp.appliedDate}</span>
+                    </div>
+                    <h2 className="text-base font-bold text-slate-900 dark:text-white">{selectedApp.opportunityTitle}</h2>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">{selectedApp.company}</p>
+                  </div>
+
+                  {/* Criteria score */}
+                  <div className="enterprise-row rounded-xl px-4 py-3 text-center shrink-0">
+                    <div className="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider">Score at Apply</div>
+                    <div className="text-xl font-bold text-blue-600 dark:text-blue-400 tabular-nums mt-0.5">
+                      {selectedApp.matchScoreAtApplication}<span className="text-sm font-normal text-slate-400 dark:text-slate-500">/100</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Timeline */}
+                <div className="space-y-4">
+                  <h3 className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Recruitment Pipeline</h3>
+
+                  <div className="relative pl-6 space-y-4 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-200 dark:before:bg-slate-700">
+                    {selectedApp.timeline.map((step, idx) => (
+                      <div key={idx} className="relative flex items-start gap-4">
+                        {/* Step dot */}
+                        <div className={`absolute -left-6 w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 ${
+                          step.completed
+                            ? 'bg-emerald-500 border-emerald-300 text-white shadow-sm'
+                            : 'bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600'
+                        }`}>
+                          {step.completed && <CheckCircle2 className="w-2.5 h-2.5" />}
                         </div>
 
-                        {step.completed ? (
-                          <span className="text-emerald-400 font-bold text-[10px] bg-emerald-950 border border-emerald-800 px-2 py-0.5 rounded-full">
-                            Passed
-                          </span>
-                        ) : (
-                          <span className="text-slate-500 text-[10px] bg-slate-900 border border-slate-800 px-2 py-0.5 rounded-full">
-                            Pending
-                          </span>
-                        )}
+                        <div className={`enterprise-row rounded-lg p-3.5 flex-1 flex items-center justify-between text-xs ${
+                          step.completed ? 'border-emerald-200 dark:border-emerald-900/60 bg-emerald-50/50 dark:bg-emerald-950/20' : ''
+                        }`}>
+                          <div className="space-y-0.5">
+                            <span className={`font-semibold block ${step.completed ? 'text-slate-900 dark:text-white' : 'text-slate-500 dark:text-slate-400'}`}>
+                              {step.step}
+                            </span>
+                            <span className="text-[11px] text-slate-400 dark:text-slate-500 flex items-center gap-1">
+                              <Clock className="w-3 h-3" />
+                              {step.date}
+                            </span>
+                          </div>
+
+                          {step.completed ? (
+                            <span className="status-pill status-pill-green text-[10px]">Completed</span>
+                          ) : (
+                            <span className="status-pill status-pill-slate text-[10px]">Pending</span>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
+
+                {/* Notes */}
+                {selectedApp.notes && (
+                  <div className="enterprise-row rounded-xl p-4 space-y-1.5 text-xs">
+                    <span className="font-bold text-slate-700 dark:text-slate-300 block">Submission Notes & Criteria Evidence:</span>
+                    <p className="text-slate-600 dark:text-slate-400 leading-relaxed">{selectedApp.notes}</p>
+                  </div>
+                )}
+
               </div>
+            )}
 
-              {/* Application Notes */}
-              {selectedApp.notes && (
-                <div className="bg-slate-950/80 border border-slate-800 rounded-2xl p-4 text-xs space-y-1">
-                  <span className="font-bold text-slate-300 block">Submitted Notes & Documents:</span>
-                  <p className="text-slate-400">{selectedApp.notes}</p>
-                </div>
-              )}
-
-            </div>
-          )}
-
-        </div>
-      )}
-
+          </div>
+        )}
+      </div>
     </AppLayout>
   );
 }

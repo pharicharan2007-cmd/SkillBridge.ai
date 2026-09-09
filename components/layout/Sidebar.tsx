@@ -11,53 +11,48 @@ import {
   Send, 
   User, 
   BookOpenCheck,
-  Sparkles,
-  Building2,
   Users,
   Award,
-  Share2,
   FolderGit2,
   GraduationCap,
   ShieldCheck,
   ChevronRight,
   TrendingUp,
-  FileCheck
+  FileCheck,
+  Microscope
 } from 'lucide-react';
 import { useStudent } from '@/lib/context/StudentContext';
+import { ThemeToggle } from '@/components/common/ThemeToggle';
 
 export const Sidebar: React.FC = () => {
   const pathname = usePathname();
   const { currentRole, applications, facultyApplications } = useStudent();
 
-  // Dynamic Navigation definition depending on active persona
   const getNavItems = () => {
     switch (currentRole) {
       case 'recruiter':
         return [
-          { name: 'Employer Dashboard', href: '/industry', icon: LayoutDashboard },
+          { name: 'Recruiter Dashboard', href: '/industry', icon: LayoutDashboard },
           { name: 'Post Opportunity', href: '/industry#post', icon: Briefcase, badge: 'New' },
-          { name: 'ATS Applicant Pipeline', href: '/industry#applicants', icon: Users, count: applications.length },
-          { name: 'Talent Discovery', href: '/industry#talent', icon: Target },
-          { name: 'Publish Courses/FDP', href: '/industry#programs', icon: BookOpenCheck },
-          { name: 'Collaboration Hub', href: '/collaboration', icon: Sparkles },
+          { name: 'ATS Candidate Pipeline', href: '/industry#applicants', icon: Users, count: applications.length },
+          { name: 'Talent Discovery Pool', href: '/industry#talent', icon: Target },
+          { name: 'Publish Courses / FDP', href: '/industry#programs', icon: BookOpenCheck },
         ];
       case 'faculty':
         return [
           { name: 'Faculty Portal', href: '/faculty', icon: LayoutDashboard },
           { name: 'Faculty Internships', href: '/faculty#internships', icon: Briefcase },
-          { name: 'National FDPs', href: '/faculty#fdp', icon: Award, badge: 'AIIA' },
-          { name: 'Research & Consultancy', href: '/faculty#research', icon: Target },
+          { name: 'National FDPs', href: '/faculty#fdp', icon: Award, badge: 'AICTE' },
+          { name: 'Research & Grants', href: '/faculty#research', icon: Microscope },
           { name: 'My Proposals', href: '/faculty#proposals', icon: FileCheck, count: facultyApplications.length },
-          { name: 'Collaboration Hub', href: '/collaboration', icon: Sparkles },
         ];
       case 'institution':
         return [
           { name: 'Campus Analytics', href: '/institution', icon: LayoutDashboard },
           { name: 'Department Skill Gaps', href: '/institution#departments', icon: Target },
           { name: 'Readiness Cohorts', href: '/institution#readiness', icon: TrendingUp },
-          { name: 'Curriculum & Trends', href: '/institution#trends', icon: BrainCircuit },
-          { name: 'Institutional Reports', href: '/institution#reports', icon: ShieldCheck, badge: 'NAAC' },
-          { name: 'Collaboration Hub', href: '/collaboration', icon: Sparkles },
+          { name: 'Curriculum & Industry Trends', href: '/institution#trends', icon: BrainCircuit },
+          { name: 'Accreditation Reports', href: '/institution#reports', icon: ShieldCheck, badge: 'NAAC' },
         ];
       case 'student':
       default:
@@ -70,7 +65,6 @@ export const Sidebar: React.FC = () => {
           { name: 'Opportunities', href: '/opportunities', icon: Briefcase },
           { name: 'Application Tracker', href: '/applications', icon: Send, count: applications.length },
           { name: 'Digital Portfolio', href: '/portfolio', icon: FolderGit2, badge: 'Verified' },
-          { name: 'Collaboration Hub', href: '/collaboration', icon: Sparkles },
         ];
     }
   };
@@ -78,36 +72,36 @@ export const Sidebar: React.FC = () => {
   const navItems = getNavItems();
 
   return (
-    <aside className="w-64 bg-[#090a0f] text-slate-300 border-r border-white/[0.06] min-h-screen flex flex-col justify-between hidden md:flex shrink-0">
+    <aside className="w-64 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-r border-slate-200 dark:border-slate-800 min-h-screen flex flex-col justify-between hidden md:flex shrink-0 transition-colors duration-150">
       
-      {/* Brand Header */}
       <div>
-        <div className="h-14 flex items-center px-5 border-b border-white/[0.06]">
+        {/* Brand Header */}
+        <div className="h-14 flex items-center px-5 border-b border-slate-200 dark:border-slate-800">
           <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center text-white text-xs font-semibold shadow-sm">
-              <Sparkles className="w-3.5 h-3.5" />
+            <div className="w-7 h-7 rounded-lg bg-blue-600 dark:bg-blue-600 flex items-center justify-center text-white text-xs font-bold shadow-sm">
+              <GraduationCap className="w-4 h-4" />
             </div>
             <div>
-              <span className="text-sm font-semibold text-white tracking-tight">SkillBridge<span className="text-indigo-400">.ai</span></span>
-              <span className="block text-[10px] text-slate-400 font-normal">Academia-Industry Portal</span>
+              <span className="text-sm font-bold text-slate-900 dark:text-white tracking-tight">SkillBridge</span>
+              <span className="block text-[10px] text-slate-500 dark:text-slate-400 font-normal">Academic–Industry Portal</span>
             </div>
           </Link>
         </div>
 
-        {/* Persona Indicator Banner */}
-        <div className="mx-3 mt-3 px-3 py-2 rounded-xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-between text-xs">
-          <div className="flex items-center gap-2 text-slate-300 font-medium capitalize">
-            <span className="w-2 h-2 rounded-full bg-emerald-400" />
+        {/* Portal Indicator Banner */}
+        <div className="mx-3 mt-3 px-3 py-2 rounded-xl bg-blue-50 dark:bg-blue-950/40 border border-blue-100 dark:border-blue-900/60 flex items-center justify-between text-xs">
+          <div className="flex items-center gap-2 text-blue-800 dark:text-blue-300 font-semibold capitalize">
+            <span className="w-2 h-2 rounded-full bg-emerald-500" />
             <span>{currentRole} Portal</span>
           </div>
-          <span className="text-[10px] bg-indigo-950 text-indigo-300 border border-indigo-800/80 px-1.5 py-0.5 rounded font-semibold">
-            v2.0
+          <span className="text-[10px] bg-white dark:bg-slate-900 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-800 px-1.5 py-0.5 rounded font-semibold">
+            DTU
           </span>
         </div>
 
         {/* Nav Links */}
-        <div className="px-3 py-4 space-y-1">
-          <div className="px-2.5 pb-2 text-[10px] font-medium text-slate-400 uppercase tracking-wider">
+        <div className="px-3 py-4 space-y-0.5">
+          <div className="px-2.5 pb-2 text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
             Navigation
           </div>
 
@@ -121,23 +115,23 @@ export const Sidebar: React.FC = () => {
                 href={item.href}
                 className={`flex items-center justify-between px-2.5 py-2 rounded-lg text-xs font-medium transition ${
                   isActive
-                    ? 'bg-white/[0.08] text-white border border-white/[0.08]'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-white/[0.03]'
+                    ? 'bg-blue-50 dark:bg-blue-950/50 text-blue-800 dark:text-blue-300 border-l-2 border-blue-600 dark:border-blue-400 pl-2 font-semibold'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-50 dark:hover:bg-slate-800/60'
                 }`}
               >
                 <div className="flex items-center gap-2.5">
-                  <Icon className={`w-4 h-4 transition ${isActive ? 'text-indigo-400' : 'text-slate-400'}`} />
+                  <Icon className={`w-4 h-4 transition ${isActive ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400 dark:text-slate-500'}`} />
                   <span>{item.name}</span>
                 </div>
 
                 {item.badge && (
-                  <span className="text-[10px] font-medium bg-indigo-950/60 text-indigo-300 border border-indigo-800/60 px-1.5 py-0.5 rounded">
+                  <span className="text-[10px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700 px-1.5 py-0.5 rounded">
                     {item.badge}
                   </span>
                 )}
 
                 {item.count !== undefined && item.count > 0 && (
-                  <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-white/[0.06] text-slate-300 tabular-nums">
+                  <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-900/60 tabular-nums">
                     {item.count}
                   </span>
                 )}
@@ -147,25 +141,32 @@ export const Sidebar: React.FC = () => {
         </div>
       </div>
 
-      {/* Footer / Ministry of Ayush & AIIA Badge */}
-      <div className="p-3 border-t border-white/[0.06] space-y-2">
-        <div className="saas-card rounded-lg p-3 text-xs space-y-1 bg-gradient-to-tr from-indigo-950/40 to-slate-900/40 border border-indigo-900/40">
-          <div className="flex items-center gap-1.5 font-bold text-indigo-300 text-[11px]">
-            <ShieldCheck className="w-3.5 h-3.5 text-indigo-400" />
-            <span>Problem Statement 26044</span>
+      {/* Footer — Theme & Institution Badge */}
+      <div className="p-3 border-t border-slate-200 dark:border-slate-800 space-y-2.5">
+        
+        {/* Quick Theme Switcher in Sidebar */}
+        <div className="flex items-center justify-between px-1 py-1">
+          <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">Theme</span>
+          <ThemeToggle variant="pill" />
+        </div>
+
+        <div className="enterprise-card rounded-lg p-3 text-xs space-y-1 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-750">
+          <div className="flex items-center gap-1.5 font-bold text-slate-700 dark:text-slate-200 text-[11px]">
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+            <span>NAAC A+ · NIRF Rank 36</span>
           </div>
-          <p className="text-slate-400 text-[10px] leading-relaxed">
-            Ministry of Ayush • All India Institute of Ayurveda (AIIA)
+          <p className="text-slate-500 dark:text-slate-400 text-[10px] leading-relaxed">
+            Delhi Technological University · AICTE Affiliated
           </p>
         </div>
 
         <Link
           href="/"
-          className="flex items-center justify-between px-2.5 py-1.5 text-xs text-slate-400 hover:text-slate-200 hover:bg-white/[0.03] rounded-lg transition"
+          className="flex items-center justify-between px-2.5 py-1.5 text-xs text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/60 rounded-lg transition"
         >
           <div className="flex items-center gap-2">
             <GraduationCap className="w-3.5 h-3.5" />
-            <span>Landing Page</span>
+            <span>Back to Landing</span>
           </div>
           <ChevronRight className="w-3 h-3 opacity-40" />
         </Link>

@@ -5,7 +5,7 @@ import { Sidebar } from './Sidebar';
 import { Navbar } from './Navbar';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, BrainCircuit, UserCheck, GitCompare, BookOpenCheck, Briefcase, Send } from 'lucide-react';
+import { LayoutDashboard, BrainCircuit, GitCompare, Briefcase, Send } from 'lucide-react';
 
 export const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const pathname = usePathname();
@@ -19,7 +19,7 @@ export const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children })
   ];
 
   return (
-    <div className="flex min-h-screen bg-[#090a0f] text-slate-100">
+    <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-150">
       
       {/* Desktop Sidebar */}
       <Sidebar />
@@ -28,14 +28,14 @@ export const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children })
       <div className="flex-1 flex flex-col min-w-0">
         <Navbar />
 
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 pb-20 md:pb-8 overflow-y-auto">
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 pb-20 md:pb-8 overflow-y-auto bg-slate-50 dark:bg-slate-950 transition-colors duration-150">
           <div className="max-w-7xl mx-auto space-y-6">
             {children}
           </div>
         </main>
 
-        {/* Mobile Bottom Navigation Bar */}
-        <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-slate-900/95 backdrop-blur-lg border-t border-slate-800 flex items-center justify-around px-2 py-2">
+        {/* Mobile Bottom Navigation */}
+        <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 flex items-center justify-around px-2 py-2">
           {mobileNav.map((item) => {
             const isActive = pathname === item.href;
             const Icon = item.icon;
@@ -44,10 +44,10 @@ export const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children })
                 key={item.href}
                 href={item.href}
                 className={`flex flex-col items-center gap-1 p-1.5 rounded-lg text-[10px] font-medium transition ${
-                  isActive ? 'text-indigo-400 font-bold' : 'text-slate-400 hover:text-slate-200'
+                  isActive ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-200'
                 }`}
               >
-                <Icon className={`w-5 h-5 ${isActive ? 'text-indigo-400' : ''}`} />
+                <Icon className={`w-5 h-5 ${isActive ? 'text-blue-600 dark:text-blue-400' : ''}`} />
                 <span>{item.label}</span>
               </Link>
             );

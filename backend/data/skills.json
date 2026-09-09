@@ -3,106 +3,134 @@
     "id": "python",
     "name": "Python",
     "category": "technical",
-    "aliases": ["python programming", "python3", "py"],
+    "aliases": ["python programming", "python3", "py", "python scripting"],
     "demand_level": "Critical"
   },
   {
     "id": "machine-learning",
     "name": "Machine Learning",
     "category": "technical",
-    "aliases": ["ml", "applied ml", "machine learning algorithms"],
+    "aliases": ["ml", "applied ml", "sklearn", "scikit-learn", "supervised learning"],
     "demand_level": "Critical"
   },
   {
-    "id": "sql",
-    "name": "SQL",
+    "id": "deep-learning",
+    "name": "TensorFlow / PyTorch",
     "category": "technical",
-    "aliases": ["structured query language", "postgresql", "mysql", "relational database"],
+    "aliases": ["tensorflow", "pytorch", "deep learning", "neural networks", "torch"],
+    "demand_level": "Critical"
+  },
+  {
+    "id": "cuda-gpu",
+    "name": "CUDA & GPU Programming",
+    "category": "technical",
+    "aliases": ["cuda", "gpu computing", "nvidia", "parallel computing", "gpu programming"],
+    "demand_level": "High"
+  },
+  {
+    "id": "sql",
+    "name": "SQL & Data Pipelines",
+    "category": "technical",
+    "aliases": ["sql", "postgresql", "mysql", "relational database", "etl", "data engineering"],
     "demand_level": "High"
   },
   {
     "id": "data-structures",
     "name": "Data Structures & Algorithms",
     "category": "problem_solving",
-    "aliases": ["dsa", "data structures", "algorithms"],
+    "aliases": ["dsa", "algorithms", "competitive programming", "leetcode"],
     "demand_level": "High"
   },
   {
-    "id": "deep-learning",
-    "name": "Deep Learning (TensorFlow / PyTorch)",
+    "id": "cpp",
+    "name": "C++",
     "category": "technical",
-    "aliases": ["tensorflow", "pytorch", "deep learning", "neural networks"],
+    "aliases": ["c plus plus", "c++17", "c++ programming", "stl"],
+    "demand_level": "High"
+  },
+  {
+    "id": "verilog-vhdl",
+    "name": "Verilog / VHDL",
+    "category": "technical",
+    "aliases": ["verilog", "vhdl", "rtl design", "hardware description language", "hdl"],
     "demand_level": "Critical"
   },
   {
-    "id": "react",
-    "name": "React.js",
+    "id": "fpga",
+    "name": "FPGA Prototyping",
     "category": "technical",
-    "aliases": ["react", "reactjs", "react framework"],
+    "aliases": ["fpga", "xilinx", "altera", "vivado", "quartus", "fpga design"],
     "demand_level": "High"
   },
   {
-    "id": "nextjs",
-    "name": "Next.js",
+    "id": "embedded-c",
+    "name": "Embedded C",
     "category": "technical",
-    "aliases": ["nextjs", "next.js", "react ssr"],
+    "aliases": ["embedded systems", "microcontroller", "arm cortex", "stm32", "bare metal"],
     "demand_level": "High"
   },
   {
-    "id": "fastapi",
-    "name": "FastAPI",
+    "id": "matlab",
+    "name": "MATLAB / Simulink",
     "category": "technical",
-    "aliases": ["fastapi", "python api", "rest api"],
+    "aliases": ["matlab", "simulink", "signal processing toolbox", "control system toolbox"],
     "demand_level": "High"
   },
   {
-    "id": "typescript",
-    "name": "TypeScript",
-    "category": "technical",
-    "aliases": ["ts", "typescript language"],
-    "demand_level": "High"
-  },
-  {
-    "id": "git",
-    "name": "Git & GitHub",
+    "id": "git-linux",
+    "name": "Git & Linux",
     "category": "digital_skills",
-    "aliases": ["git", "github", "version control"],
+    "aliases": ["git", "github", "linux", "bash", "version control", "shell scripting"],
     "demand_level": "Critical"
+  },
+  {
+    "id": "distributed-systems",
+    "name": "Distributed Systems",
+    "category": "digital_skills",
+    "aliases": ["distributed computing", "microservices", "kafka", "message queues", "raft"],
+    "demand_level": "High"
+  },
+  {
+    "id": "docker-devops",
+    "name": "Docker & DevOps",
+    "category": "digital_skills",
+    "aliases": ["docker", "kubernetes", "ci/cd", "devops", "containers", "jenkins"],
+    "demand_level": "High"
   },
   {
     "id": "cloud-aws",
-    "name": "Cloud Computing (AWS)",
+    "name": "Cloud Computing (AWS / GCP)",
     "category": "digital_skills",
-    "aliases": ["aws", "amazon web services", "cloud architecture"],
-    "demand_level": "High"
-  },
-  {
-    "id": "docker",
-    "name": "Docker & Containerization",
-    "category": "technical",
-    "aliases": ["docker", "containers", "docker-compose"],
-    "demand_level": "High"
-  },
-  {
-    "id": "system-design",
-    "name": "System Design",
-    "category": "digital_skills",
-    "aliases": ["system design", "distributed systems", "microservices"],
+    "aliases": ["aws", "gcp", "azure", "cloud architecture", "s3", "ec2", "lambda"],
     "demand_level": "High"
   },
   {
     "id": "pandas-numpy",
     "name": "Pandas & NumPy",
     "category": "technical",
-    "aliases": ["pandas", "numpy", "data analysis"],
+    "aliases": ["pandas", "numpy", "data analysis", "dataframe", "scipy"],
     "demand_level": "High"
   },
   {
-    "id": "prompt-engineering",
-    "name": "Prompt Engineering & GenAI",
+    "id": "system-design",
+    "name": "System Design",
+    "category": "digital_skills",
+    "aliases": ["system design", "scalability", "load balancing", "caching", "database design"],
+    "demand_level": "High"
+  },
+  {
+    "id": "pcb-design",
+    "name": "PCB Design",
     "category": "technical",
-    "aliases": ["prompt engineering", "genai", "llm", "large language models"],
-    "demand_level": "Critical"
+    "aliases": ["pcb", "altium", "kicad", "eagle", "schematic capture", "layout"],
+    "demand_level": "Medium"
+  },
+  {
+    "id": "dsp",
+    "name": "Signal Processing (DSP)",
+    "category": "technical",
+    "aliases": ["dsp", "digital signal processing", "filter design", "fft", "signals and systems"],
+    "demand_level": "Medium"
   },
   {
     "id": "problem-solving",
@@ -113,37 +141,23 @@
   },
   {
     "id": "communication",
-    "name": "Communication",
+    "name": "Technical Communication",
     "category": "soft_skills",
-    "aliases": ["technical communication", "verbal communication", "presentation"],
+    "aliases": ["technical writing", "documentation", "presentation", "report writing"],
+    "demand_level": "High"
+  },
+  {
+    "id": "research-methodology",
+    "name": "Research Methodology",
+    "category": "soft_skills",
+    "aliases": ["research methods", "literature survey", "academic writing", "ieee publication"],
     "demand_level": "High"
   },
   {
     "id": "teamwork",
     "name": "Teamwork & Collaboration",
     "category": "soft_skills",
-    "aliases": ["collaboration", "team player", "peer review"],
+    "aliases": ["collaboration", "team player", "agile", "scrum"],
     "demand_level": "High"
-  },
-  {
-    "id": "leadership",
-    "name": "Leadership",
-    "category": "soft_skills",
-    "aliases": ["initiative", "project ownership", "team lead"],
-    "demand_level": "Medium"
-  },
-  {
-    "id": "cad",
-    "name": "CAD & AutoCAD",
-    "category": "domain_knowledge",
-    "aliases": ["autocad", "computer aided design", "cad modeling"],
-    "demand_level": "Medium"
-  },
-  {
-    "id": "solidworks",
-    "name": "SolidWorks",
-    "category": "domain_knowledge",
-    "aliases": ["solidworks 3d", "3d modeling", "mechanical cad"],
-    "demand_level": "Medium"
   }
 ]
