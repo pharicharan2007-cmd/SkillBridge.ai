@@ -32,11 +32,8 @@ export const Sidebar: React.FC = () => {
     switch (currentRole) {
       case 'recruiter':
         return [
-          { name: 'Recruiter Dashboard', href: '/industry', icon: LayoutDashboard },
-          { name: 'Post Opportunity', href: '/industry#post', icon: Briefcase, badge: 'New' },
-          { name: 'ATS Candidate Pipeline', href: '/industry#applicants', icon: Users, count: applications.length },
-          { name: 'Talent Discovery Pool', href: '/industry#talent', icon: Target },
-          { name: 'Publish Courses / FDP', href: '/industry#programs', icon: BookOpenCheck },
+          { name: 'Live Hiring Portal', href: '/recruiter', icon: LayoutDashboard, badge: 'Live DB' },
+          { name: 'ATS Legacy Dashboard', href: '/industry', icon: Users },
         ];
       case 'faculty':
         return [

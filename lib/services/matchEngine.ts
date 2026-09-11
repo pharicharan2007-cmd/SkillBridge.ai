@@ -57,11 +57,19 @@ export function calculateOpportunityMatch(
   // 2. Eligibility Calculation (20% Weight)
   let eligibilityScore = 100;
   const isCgpaEligible = student.cgpa >= opportunity.minimumCGPA;
-  const isBranchEligible = opportunity.eligibleBranches.some(b => 
-    b.toLowerCase().includes('all') || 
-    student.branch.toLowerCase().includes(b.toLowerCase()) || 
-    b.toLowerCase().includes(student.branch.toLowerCase())
-  );
+  const isClusterEligible = !!(opportunity.engineeringCluster && student.engineeringCluster && opportunity.engineeringCluster === student.engineeringCluster);
+
+  const isBranchEligible = isClusterEligible || opportunity.eligibleBranches.some(b => {
+    const bLower = b.toLowerCase();
+    const sLower = (student.branch || '').toLowerCase();
+    if (bLower.includes('all')) return true;
+    if (sLower.includes(bLower) || bLower.includes(sLower)) return true;
+
+    // Check engineering discipline keywords (e.g. ECE / Electronics / VLSI)
+    const keywords = ['electronics', 'vlsi', 'embedded', 'ece', 'mechanical', 'robotics', 'automotive', 'civil', 'structural', 'electrical', 'computer', 'software', 'data science'];
+    const matchedKeyword = keywords.find(k => bLower.includes(k) && sLower.includes(k));
+    return !!matchedKeyword;
+  });
 
   if (!isCgpaEligible) eligibilityScore -= 40;
   if (!isBranchEligible) eligibilityScore -= 40;

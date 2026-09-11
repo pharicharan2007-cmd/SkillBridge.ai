@@ -5,18 +5,46 @@ import { Sidebar } from './Sidebar';
 import { Navbar } from './Navbar';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, BrainCircuit, GitCompare, Briefcase, Send } from 'lucide-react';
+import { LayoutDashboard, BrainCircuit, GitCompare, Briefcase, Send, Users, BookOpenCheck, Award, Target, ShieldCheck } from 'lucide-react';
+
+import { useStudent } from '@/lib/context/StudentContext';
+import { ToastProvider } from '@/components/common/Toast';
 
 export const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const pathname = usePathname();
+  const { currentRole } = useStudent();
 
-  const mobileNav = [
-    { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-    { href: '/assessment', icon: BrainCircuit, label: 'Assessment' },
-    { href: '/skill-gap', icon: GitCompare, label: 'Skill Gap' },
-    { href: '/opportunities', icon: Briefcase, label: 'Jobs' },
-    { href: '/applications', icon: Send, label: 'Tracker' },
-  ];
+  const mobileNav = React.useMemo(() => {
+    switch (currentRole) {
+      case 'recruiter':
+        return [
+          { href: '/industry', icon: LayoutDashboard, label: 'Dashboard' },
+          { href: '/industry#applicants', icon: Users, label: 'Pipeline' },
+          { href: '/industry#programs', icon: BookOpenCheck, label: 'Programs' },
+        ];
+      case 'faculty':
+        return [
+          { href: '/faculty', icon: LayoutDashboard, label: 'Portal' },
+          { href: '/faculty#fdp', icon: Award, label: 'FDPs' },
+          { href: '/faculty#research', icon: Send, label: 'Proposals' },
+        ];
+      case 'institution':
+        return [
+          { href: '/institution', icon: LayoutDashboard, label: 'Analytics' },
+          { href: '/institution#departments', icon: Target, label: 'Skill Gaps' },
+          { href: '/institution#reports', icon: ShieldCheck, label: 'Reports' },
+        ];
+      case 'student':
+      default:
+        return [
+          { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+          { href: '/assessment', icon: BrainCircuit, label: 'Assessment' },
+          { href: '/skill-gap', icon: GitCompare, label: 'Skill Gap' },
+          { href: '/opportunities', icon: Briefcase, label: 'Jobs' },
+          { href: '/applications', icon: Send, label: 'Tracker' },
+        ];
+    }
+  }, [currentRole]);
 
   return (
     <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-150">
@@ -54,6 +82,7 @@ export const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children })
           })}
         </div>
 
+        <ToastProvider />
       </div>
     </div>
   );

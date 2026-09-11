@@ -12,17 +12,33 @@ import {
   Target, 
   Plus, 
   ShieldCheck, 
-  Clock,
-  ExternalLink,
-  Edit3,
-  FolderGit2
+  Clock, 
+  ExternalLink, 
+  Edit3, 
+  FolderGit2,
+  Upload,
+  X,
+  Loader2,
+  FileText
 } from 'lucide-react';
+import { uploadStudentDocument } from '@/lib/services/documentService';
+import { DocumentCategory } from '@/types';
+import { SkillProfile } from '@/components/profile/SkillProfile';
 
 export default function SkillProfilePage() {
-  const { student, updateTargetRole } = useStudent();
+  const { student, updateTargetRole, processDocumentVerification } = useStudent();
   const [activeTab, setActiveTab] = useState<'all' | 'verified' | 'unverified'>('all');
   const [isEditingRole, setIsEditingRole] = useState(false);
   const [newRole, setNewRole] = useState(student.targetRole);
+
+  // Upload Certification Modal State
+  const [showUploadModal, setShowUploadModal] = useState(false);
+  const [modalCategory, setModalCategory] = useState<DocumentCategory>('certifications');
+  const [modalIssuer, setModalIssuer] = useState('Coursera');
+  const [modalCertId, setModalCertId] = useState('');
+  const [modalFile, setModalFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadFeedback, setUploadFeedback] = useState<string | null>(null);
 
   const filteredSkills = student.skills.filter(s => {
     if (activeTab === 'verified') return s.verified;
@@ -36,6 +52,52 @@ export default function SkillProfilePage() {
   const handleSaveRole = () => {
     updateTargetRole(newRole);
     setIsEditingRole(false);
+  };
+
+  const handleModalUpload = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!modalFile) return;
+
+    setIsUploading(true);
+    setUploadFeedback('Uploading document to secure storage...');
+
+    const res = await uploadStudentDocument(student.id || 'std-101', modalCategory, modalFile);
+    const filePath = res.data?.filePath || `credentials/${Date.now()}_${modalFile.name}`;
+
+    setUploadFeedback('Running automated verification check...');
+    const verifiedDoc = await processDocumentVerification({
+      studentId: student.id || 'std-101',
+      category: modalCategory,
+      title: modalFile.name.replace(/\.[^/.]+$/, ''),
+      filePath,
+      fileBlob: modalFile,
+      issuer: modalIssuer,
+      certificateId: modalCertId,
+      enrollmentNumber: student.enrollmentNumber
+    });
+
+    if (verifiedDoc.verificationStatus === 'verified') {
+      setUploadFeedback(`✓ Auto-Verified: ${verifiedDoc.title}`);
+      setTimeout(() => {
+        setShowUploadModal(false);
+        setModalFile(null);
+        setModalCertId('');
+        setUploadFeedback(null);
+        setIsUploading(false);
+      }, 1000);
+    } else if (verifiedDoc.verificationStatus === 'needs_review') {
+      setUploadFeedback(`⏳ Queued for Exception Review: ${verifiedDoc.flaggedReason || 'Visual inspection required'}`);
+      setTimeout(() => {
+        setShowUploadModal(false);
+        setModalFile(null);
+        setModalCertId('');
+        setUploadFeedback(null);
+        setIsUploading(false);
+      }, 1500);
+    } else {
+      setUploadFeedback(`✗ Auto-Rejected: ${verifiedDoc.flaggedReason || 'Validation failed'}`);
+      setIsUploading(false);
+    }
   };
 
   return (
@@ -85,6 +147,14 @@ export default function SkillProfilePage() {
                 <span>{student.lastAssessmentDate || 'Recently Completed'}</span>
               </div>
               <div className="flex items-center gap-2 justify-end pt-1">
+                <button
+                  type="button"
+                  onClick={() => setShowUploadModal(true)}
+                  className="inline-flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white px-2.5 py-1 rounded-lg text-xs font-semibold transition shadow-sm cursor-pointer"
+                >
+                  <Upload className="w-3 h-3" />
+                  <span>Upload Credential</span>
+                </button>
                 <Link
                   href="/portfolio"
                   className="inline-flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1 rounded-lg text-xs font-semibold transition shadow-sm"
@@ -144,6 +214,9 @@ export default function SkillProfilePage() {
             </div>
           </div>
         </div>
+
+        {/* SkillProfile Component */}
+        <SkillProfile />
 
         {/* Verified vs Unverified Skills Section */}
         <div className="enterprise-card rounded-xl p-6 sm:p-7 space-y-6">
@@ -230,7 +303,11 @@ export default function SkillProfilePage() {
               <Award className="w-4 h-4 text-blue-600 dark:text-blue-400" />
               <span>Verified Certifications & Credentials ({student.certifications.length})</span>
             </h3>
-            <button className="text-xs text-blue-600 dark:text-blue-400 font-semibold hover:underline flex items-center gap-1">
+            <button 
+              type="button"
+              onClick={() => setShowUploadModal(true)}
+              className="text-xs text-blue-600 dark:text-blue-400 font-semibold hover:underline flex items-center gap-1 cursor-pointer"
+            >
               <Plus className="w-3.5 h-3.5" />
               <span>Add Certification</span>
             </button>
@@ -260,6 +337,118 @@ export default function SkillProfilePage() {
         </div>
 
       </div>
+
+      {/* Upload Credential Modal */}
+      {showUploadModal && (
+        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="enterprise-card rounded-2xl max-w-md w-full p-6 space-y-4 shadow-enterprise-modal border border-slate-700">
+            <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+              <div className="flex items-center gap-2">
+                <Award className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                <h3 className="text-base font-bold text-slate-900 dark:text-white">Add Verified Credential</h3>
+              </div>
+              <button onClick={() => setShowUploadModal(false)} className="text-slate-400 hover:text-slate-200">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleModalUpload} className="space-y-4 text-xs">
+              <div className="space-y-1">
+                <label className="text-slate-600 dark:text-slate-300 font-medium">Document Category</label>
+                <select
+                  value={modalCategory}
+                  onChange={(e) => setModalCategory(e.target.value as DocumentCategory)}
+                  className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 text-slate-900 dark:text-white focus:outline-none"
+                >
+                  <option value="certifications">Industry Certification</option>
+                  <option value="transcripts">Academic Marksheet</option>
+                  <option value="internship_reports">Internship Completion Record</option>
+                </select>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="text-slate-600 dark:text-slate-300 font-medium">Issuer</label>
+                  <select
+                    value={modalIssuer}
+                    onChange={(e) => setModalIssuer(e.target.value)}
+                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 text-slate-900 dark:text-white focus:outline-none"
+                  >
+                    <option value="Coursera">Coursera</option>
+                    <option value="NPTEL">NPTEL / IIT</option>
+                    <option value="AWS">Amazon AWS</option>
+                    <option value="Google">Google Cloud</option>
+                    <option value="Microsoft">Microsoft</option>
+                  </select>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-slate-600 dark:text-slate-300 font-medium">Cert ID or URL (Optional)</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. 937BXZ7E or Verify link"
+                    value={modalCertId}
+                    onChange={(e) => setModalCertId(e.target.value)}
+                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 text-slate-900 dark:text-white focus:outline-none font-mono"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-slate-600 dark:text-slate-300 font-medium">Upload Certificate (PDF / Image)</label>
+                <input
+                  type="file"
+                  required
+                  accept=".pdf,.png,.jpg,.jpeg"
+                  onChange={(e) => setModalFile(e.target.files?.[0] || null)}
+                  className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-2 text-slate-700 dark:text-slate-300 text-xs"
+                />
+              </div>
+
+              {uploadFeedback && (
+                <div className={`p-2.5 rounded-lg text-xs font-semibold flex items-center gap-2 ${
+                  uploadFeedback.startsWith('✓')
+                    ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                    : uploadFeedback.startsWith('⏳')
+                    ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
+                    : uploadFeedback.startsWith('✗')
+                    ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
+                    : 'bg-blue-500/10 text-blue-400 border border-blue-500/20 animate-pulse'
+                }`}>
+                  <span>{uploadFeedback}</span>
+                </div>
+              )}
+
+              <div className="pt-2 flex items-center justify-end gap-2 border-t border-slate-200 dark:border-slate-800">
+                <button
+                  type="button"
+                  onClick={() => setShowUploadModal(false)}
+                  className="enterprise-btn-secondary px-3 py-1.5 rounded-lg text-xs"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isUploading || !modalFile}
+                  className="enterprise-btn-primary px-4 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 disabled:opacity-50 cursor-pointer"
+                >
+                  {isUploading ? (
+                    <>
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                      <span>Validating...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Upload className="w-3.5 h-3.5" />
+                      <span>Auto-Verify & Add</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </AppLayout>
   );
 }

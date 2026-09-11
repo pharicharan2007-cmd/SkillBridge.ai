@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Opportunity } from '@/types';
-import { CheckCircle2, MapPin, Bookmark, ArrowRight, ShieldCheck, AlertCircle } from 'lucide-react';
+import { CheckCircle2, MapPin, Bookmark, ArrowRight, ShieldCheck, AlertCircle, Sparkles } from 'lucide-react';
 
 interface OpportunityCardProps {
   opportunity: Opportunity;
@@ -65,7 +65,28 @@ export const OpportunityCard: React.FC<OpportunityCardProps> = ({
           <span className="status-pill status-pill-slate">{opportunity.type}</span>
           <span className="credential-tag font-semibold text-emerald-700 dark:text-emerald-400">{opportunity.stipend}</span>
           <span className="credential-tag">{opportunity.duration}</span>
+          {opportunity.engineeringCluster && (
+            <span className="bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-[9px] font-mono px-1.5 py-0.5 rounded border border-slate-200 dark:border-slate-700">
+              {opportunity.engineeringCluster.split('&')[0]}
+            </span>
+          )}
         </div>
+
+        {/* CAD Tools & Industry Standards */}
+        {(opportunity.cadToolsRequired?.length || opportunity.industryStandards?.length) ? (
+          <div className="flex flex-wrap items-center gap-1 text-[10px]">
+            {opportunity.cadToolsRequired?.map(tool => (
+              <span key={tool} className="bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-900/60 px-1.5 py-0.5 rounded font-mono text-[9px]">
+                ⚙ {tool}
+              </span>
+            ))}
+            {opportunity.industryStandards?.map(std => (
+              <span key={std} className="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 px-1.5 py-0.5 rounded font-mono text-[9px]">
+                § {std}
+              </span>
+            ))}
+          </div>
+        ) : null}
 
         {/* Location */}
         <div className="flex items-center gap-1 text-[11px] text-slate-500 dark:text-slate-400">
@@ -73,11 +94,21 @@ export const OpportunityCard: React.FC<OpportunityCardProps> = ({
           <span className="truncate">{opportunity.location}</span>
         </div>
 
-        {/* Why matched context */}
+        {/* Explainable AI: Why-This-Match Context (Slide 2: Explainable AI Matching Engine) */}
         {match?.whyRecommended && (
-          <div className="bg-blue-50 dark:bg-blue-950/40 border border-blue-100 dark:border-blue-900/60 rounded-lg p-2.5 text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">
-            <span className="font-semibold text-blue-700 dark:text-blue-400">Why matched: </span>
-            {match.whyRecommended}
+          <div className="bg-gradient-to-r from-blue-50/70 to-indigo-50/70 dark:from-slate-800 dark:to-slate-800/80 border border-blue-200 dark:border-blue-900/60 rounded-lg p-2.5 space-y-1 text-[11px] leading-relaxed">
+            <div className="flex items-center justify-between">
+              <span className="font-bold text-blue-700 dark:text-blue-400 flex items-center gap-1 text-[10px] uppercase tracking-wider">
+                <Sparkles className="w-3 h-3 text-indigo-500" />
+                Why-This-Match
+              </span>
+              <span className="text-[9px] font-mono text-slate-400 dark:text-slate-500">
+                {match.finalMatchScore}% Match Compatibility
+              </span>
+            </div>
+            <p className="text-slate-600 dark:text-slate-300">
+              {match.whyRecommended}
+            </p>
           </div>
         )}
 

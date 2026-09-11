@@ -33,6 +33,13 @@ export interface StudentPortfolioProject {
   date?: string;
 }
 
+export type EngineeringCluster =
+  | 'Computer Science & Information Technology'
+  | 'Electronics & Communication (VLSI & Embedded)'
+  | 'Mechanical, Robotics & Automotive EV'
+  | 'Civil & Smart Infrastructure'
+  | 'Electrical, Power Systems & Renewable Energy';
+
 export interface StudentProfile {
   id: string;
   name: string;
@@ -42,6 +49,7 @@ export interface StudentProfile {
   college?: string;
   degree: string;
   branch: string;
+  engineeringCluster?: EngineeringCluster;
   year?: number;
   semester: number;
   cgpa: number;
@@ -49,6 +57,7 @@ export interface StudentProfile {
   targetRole: string;
   careerInterests: string[];
   enrollmentNumber?: string;
+  studentUid?: string; // State-Anchored Indian Academic Student UID: [State]-[City]-[College]-[Degree]-[Branch]-[Batch]-[Roll]
   graduationYear?: number;
   verificationStatus?: 'Unverified' | 'Pending' | 'Verified';
   verificationType?: 'COLLEGE_ID' | 'MARKSHEET' | 'EXAM_VERIFIED';
@@ -74,6 +83,7 @@ export interface StudentProfile {
     certificateUrl?: string;
     verified: boolean;
   }[];
+  verifiedDocumentIds?: string[];
 }
 
 export interface Opportunity {
@@ -87,6 +97,9 @@ export interface Opportunity {
   duration: string;
   deadline: string;
   domain: string;
+  engineeringCluster?: EngineeringCluster;
+  cadToolsRequired?: string[];
+  industryStandards?: string[];
   requiredSkills: string[];
   minimumCGPA: number;
   eligibleBranches: string[];
@@ -109,14 +122,50 @@ export interface Opportunity {
 
 export interface AssessmentQuestion {
   id: string;
-  question: string;
-  category: SkillCategory;
-  relatedSkill: string;
-  options: {
-    label: string;
-    score: number; // 1 to 5 scale
-  }[];
+  discipline: string;
+  phase: 'baseline' | 'role_specific' | 'soft_skills';
+  text: string;
+  options: string[];
+  correct_answer: string;
+  points?: number;
+  metadata?: {
+    skill?: string;
+    role?: string;
+    [key: string]: any;
+  };
 }
+
+export interface AssessmentAttempt {
+  id: string;
+  student_id: string;
+  start_time: string;
+  end_time?: string;
+  status: 'in_progress' | 'completed' | 'abandoned';
+}
+
+export interface AssessmentAnswer {
+  id?: string;
+  attempt_id: string;
+  question_id: string;
+  selected_option: string;
+  time_spent_ms: number;
+  is_correct: boolean;
+}
+
+export interface TargetRole {
+  id: string;
+  role_name: string;
+  required_skills: Record<string, number>;
+}
+
+export interface SkillScore {
+  id: string;
+  student_id: string;
+  skill_name: string;
+  score: number;
+  verification_status: 'unverified' | 'auto_verified' | 'cross_validated';
+}
+
 
 export interface LearningResource {
   id: string;
@@ -126,6 +175,7 @@ export interface LearningResource {
   duration: string;
   level: 'Beginner' | 'Intermediate' | 'Advanced';
   skillAddressed: string;
+  engineeringCluster?: EngineeringCluster;
   rating: number;
   enrollUrl: string;
   image: string;
@@ -145,6 +195,11 @@ export interface ApplicationRecord {
   appliedDate: string;
   status: 'Submitted' | 'Under Review' | 'Interview Scheduled' | 'Shortlisted' | 'Offered' | 'Rejected';
   matchScoreAtApplication: number;
+  matchDetails?: {
+    matchedSkills: string[];
+    missingSkills: string[];
+    skillMatchPercentage: number;
+  };
   notes?: string;
   timeline: {
     step: string;
@@ -220,4 +275,58 @@ export interface DepartmentMetric {
   activeInternships: number;
   topSkills: string[];
   criticalGaps: string[];
+}
+
+export type DocumentCategory = 'certifications' | 'transcripts' | 'internship_reports' | 'resumes' | 'id_proofs';
+
+export type VerificationStatus = 'verified' | 'rejected' | 'needs_review' | 'pending';
+
+export type VerificationMethod = 
+  | 'api_check' 
+  | 'db_match' 
+  | 'platform_sourced' 
+  | 'diagnostic_test' 
+  | 'ocr_match' 
+  | 'manual_exception';
+
+export interface DocumentRecord {
+  id: string;
+  studentId: string;
+  studentName: string;
+  studentEmail: string;
+  studentBranch?: string;
+  studentCgpa?: number;
+  studentEnrollmentNumber?: string;
+  category: DocumentCategory;
+  title: string;
+  filePath: string;
+  issuer?: string;
+  certificateId?: string;
+  verificationStatus: VerificationStatus;
+  verificationMethod: VerificationMethod;
+  flaggedReason?: string;
+  extractedData?: {
+    cgpa?: number;
+    enrollmentNumber?: string;
+    studentName?: string;
+    issuerVerified?: boolean;
+    ocrConfidence?: number;
+    platformOpportunityId?: string;
+    [key: string]: any;
+  };
+  submittedAt: string;
+  verifiedAt?: string;
+  verifiedBy?: string;
+}
+
+export interface VerificationLog {
+  id: string;
+  documentId: string;
+  studentId: string;
+  oldStatus: string;
+  newStatus: VerificationStatus;
+  method: VerificationMethod;
+  reason?: string;
+  timestamp: string;
+  actor: string; // e.g. 'Automation Engine (API)', 'Institution Admin (Manual)', etc.
 }

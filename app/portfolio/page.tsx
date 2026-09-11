@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { useStudent } from '@/lib/context/StudentContext';
+import { uploadStudentDocument, DocumentCategory } from '@/lib/services/documentService';
 import { 
   FolderGit2, 
   CheckCircle2, 
@@ -16,13 +17,81 @@ import {
   ShieldCheck, 
   Briefcase, 
   Clock,
-  X
+  X,
+  Upload,
+  FileCheck,
+  Loader2,
+  FileText
 } from 'lucide-react';
 
 export default function StudentDigitalPortfolioPage() {
-  const { student, addProjectToPortfolio } = useStudent();
+  const { student, addProjectToPortfolio, processDocumentVerification } = useStudent();
   const [showAddProjectModal, setShowAddProjectModal] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
+
+  // Supabase Upload State
+  const [uploadingDoc, setUploadingDoc] = useState(false);
+  const [docUploadStatus, setDocUploadStatus] = useState<string | null>(null);
+  const [targetCategory, setTargetCategory] = useState<DocumentCategory>('certifications');
+  const [certIdInput, setCertIdInput] = useState('');
+  const [issuerInput, setIssuerInput] = useState('NPTEL');
+  const [academicCgpaInput, setAcademicCgpaInput] = useState<number>(student.cgpa || 8.65);
+  const docInputRef = useRef<HTMLInputElement>(null);
+  const [recentUploads, setRecentUploads] = useState<Array<{ name: string; category: string; path: string; status: string; date: string }>>([]);
+
+  const handleDocumentUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingDoc(true);
+    setDocUploadStatus('1/2 Uploading document to private Supabase bucket...');
+
+    const res = await uploadStudentDocument(student.id || 'std-101', targetCategory, file);
+
+    if (res.error) {
+      setDocUploadStatus(`Upload failed: ${res.error}`);
+      setUploadingDoc(false);
+      return;
+    }
+
+    if (res.data) {
+      setDocUploadStatus('2/2 Running Automated Verification Engine (API / Checksum / DB Cross-Match)...');
+
+      const verifiedDoc = await processDocumentVerification({
+        studentId: student.id || 'std-101',
+        category: targetCategory,
+        title: file.name.replace(/\.[^/.]+$/, ''),
+        filePath: res.data.filePath,
+        fileBlob: file,
+        issuer: issuerInput,
+        certificateId: certIdInput,
+        cgpa: targetCategory === 'transcripts' ? academicCgpaInput : undefined,
+        enrollmentNumber: student.enrollmentNumber
+      });
+
+      const statusBadge = verifiedDoc.verificationStatus === 'verified' 
+        ? '✓ Auto-Verified' 
+        : verifiedDoc.verificationStatus === 'rejected'
+        ? '✗ Auto-Rejected'
+        : '⏳ Queued for Exception Review';
+
+      setDocUploadStatus(`${statusBadge}: ${verifiedDoc.title} (${verifiedDoc.verificationMethod.toUpperCase()})`);
+      
+      setRecentUploads(prev => [
+        { 
+          name: verifiedDoc.title, 
+          category: verifiedDoc.category, 
+          path: verifiedDoc.filePath, 
+          status: verifiedDoc.verificationStatus,
+          date: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        },
+        ...prev
+      ]);
+
+      if (docInputRef.current) docInputRef.current.value = '';
+    }
+    setUploadingDoc(false);
+  };
 
   const [newProject, setNewProject] = useState({
     title: '',
@@ -84,6 +153,19 @@ export default function StudentDigitalPortfolioPage() {
               <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-2xl leading-relaxed">
                 A verified digital portfolio showcasing your technical capabilities, certified badges, code repositories, and industrial training records to recruiters.
               </p>
+              <div className="flex flex-wrap items-center gap-2 pt-1">
+                <span className="font-mono text-xs px-2.5 py-1 rounded-lg bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-900 flex items-center gap-1.5 font-semibold">
+                  <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
+                  UID: {student.studentUid || 'DL-DEL-DTU-BT-CS-22-0148'}
+                </span>
+                <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">
+                  {student.degree} ({student.branch}) · {student.institution}
+                </span>
+                <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded border border-emerald-200 dark:border-emerald-800">
+                  <ShieldCheck className="w-3 h-3" />
+                  <span>AICTE Accredited Identity</span>
+                </span>
+              </div>
             </div>
 
             <div className="flex items-center gap-3 shrink-0">
@@ -104,6 +186,150 @@ export default function StudentDigitalPortfolioPage() {
               </button>
             </div>
           </div>
+        </div>
+
+        {/* Supabase Secure Document Management Section */}
+        <div className="enterprise-card rounded-xl p-5 sm:p-6 space-y-4 border-2 border-dashed border-blue-200 dark:border-blue-900/50 bg-gradient-to-r from-blue-50/50 via-white to-indigo-50/50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-xs shadow-sm">
+                  <FileCheck className="w-4 h-4" />
+                </div>
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                  Upload Verified Document to Supabase Storage
+                </h3>
+                <span className="status-pill status-pill-green text-[10px]">
+                  Private S3 Bucket
+                </span>
+              </div>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Upload your resumes, certificates, and marksheet PDFs directly to your encrypted student folder in <code className="text-blue-700 dark:text-blue-300 font-mono">student-documents</code>.
+              </p>
+            </div>
+
+            {/* Document Type Selector & Contextual Inputs */}
+            <div className="flex items-center gap-2.5 shrink-0 flex-wrap">
+              <select
+                value={targetCategory}
+                onChange={(e) => setTargetCategory(e.target.value as DocumentCategory)}
+                className="text-xs border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-lg px-3 py-2 font-medium text-slate-700 dark:text-slate-200 shadow-sm"
+              >
+                <option value="certifications">Certificate (NPTEL/Coursera/AWS)</option>
+                <option value="transcripts">Academic Marksheet (CGPA Match)</option>
+                <option value="id_proofs">College ID Card (Name Verification)</option>
+                <option value="internship_reports">Internship Completion Record</option>
+                <option value="resumes">Resume (PDF)</option>
+              </select>
+
+              {/* Dynamic ID Card Helper */}
+              {targetCategory === 'id_proofs' && (
+                <div className="flex items-center gap-1.5 text-xs bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 px-2.5 py-1.5 rounded-lg">
+                  <span className="text-slate-400 font-medium">Verify against:</span>
+                  <span className="font-bold text-blue-600 dark:text-blue-400">{student.name}</span>
+                </div>
+              )}
+
+              {/* Dynamic Certificate Verification Inputs */}
+              {targetCategory === 'certifications' && (
+                <>
+                  <select
+                    value={issuerInput}
+                    onChange={(e) => setIssuerInput(e.target.value)}
+                    className="text-xs border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-lg px-2.5 py-2 font-medium text-slate-700 dark:text-slate-200 shadow-sm"
+                  >
+                    <option value="NPTEL">NPTEL / IIT</option>
+                    <option value="Coursera">Coursera</option>
+                    <option value="AWS">Amazon AWS</option>
+                    <option value="Google">Google Cloud</option>
+                  </select>
+                  <input
+                    type="text"
+                    placeholder="Cert ID or Verify Link (Optional)"
+                    value={certIdInput}
+                    onChange={(e) => setCertIdInput(e.target.value)}
+                    className="text-xs border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-lg px-2.5 py-2 font-mono text-slate-700 dark:text-slate-200 shadow-sm w-52"
+                  />
+                </>
+              )}
+
+              {/* Dynamic Transcript Inputs */}
+              {targetCategory === 'transcripts' && (
+                <div className="flex items-center gap-1.5 text-xs bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 px-2.5 py-1.5 rounded-lg">
+                  <span className="text-slate-400 font-medium">Claimed CGPA:</span>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    max="10"
+                    value={academicCgpaInput}
+                    onChange={(e) => setAcademicCgpaInput(parseFloat(e.target.value))}
+                    className="w-16 font-bold text-blue-600 dark:text-blue-400 text-xs bg-transparent focus:outline-none"
+                  />
+                </div>
+              )}
+
+              <input
+                type="file"
+                ref={docInputRef}
+                onChange={handleDocumentUpload}
+                className="hidden"
+                accept=".pdf,.png,.jpg,.jpeg,.doc,.docx"
+              />
+
+              <button
+                type="button"
+                onClick={() => docInputRef.current?.click()}
+                disabled={uploadingDoc}
+                className="enterprise-btn-primary px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-2 cursor-pointer shadow-sm hover:scale-[1.02] active:scale-[0.98] transition"
+              >
+                {uploadingDoc ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Validating...</span>
+                  </>
+                ) : (
+                  <>
+                    <Upload className="w-4 h-4" />
+                    <span>Upload & Auto-Verify</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* Status Message */}
+          {docUploadStatus && (
+            <div className={`text-xs px-3.5 py-2.5 rounded-lg font-medium flex items-center gap-2 ${
+              docUploadStatus.startsWith('✓') 
+                ? 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-200 border border-emerald-200 dark:border-emerald-800' 
+                : docUploadStatus.includes('failed') 
+                ? 'bg-red-50 dark:bg-red-950/50 text-red-800 dark:text-red-200 border border-red-200 dark:border-red-800' 
+                : 'bg-blue-50 dark:bg-blue-950/50 text-blue-800 dark:text-blue-200 border border-blue-200 dark:border-blue-800 animate-pulse'
+            }`}>
+              <span>{docUploadStatus}</span>
+            </div>
+          )}
+
+          {/* List of uploaded documents in this session */}
+          {recentUploads.length > 0 && (
+            <div className="pt-2 border-t border-slate-200 dark:border-slate-800 space-y-2">
+              <div className="text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                Recently Uploaded Documents:
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {recentUploads.map((u, i) => (
+                  <div key={i} className="flex items-center justify-between p-2.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs">
+                    <div className="flex items-center gap-2 truncate">
+                      <FileText className="w-4 h-4 text-blue-600 shrink-0" />
+                      <span className="font-semibold truncate">{u.name}</span>
+                    </div>
+                    <span className="status-pill status-pill-blue text-[10px] shrink-0 uppercase">{u.category}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Portfolio Showcase Card */}
@@ -418,3 +644,4 @@ export default function StudentDigitalPortfolioPage() {
     </AppLayout>
   );
 }
+

@@ -67,75 +67,84 @@ export const MOCK_INSTITUTION_DATA: InstitutionSummary = {
       criticalGaps: ['TensorFlow / PyTorch', 'Distributed Systems', 'Docker & DevOps']
     },
     {
-      name: 'Electrical Engg. — VLSI Specialisation',
+      name: 'Electronics & Communication (VLSI & Embedded)',
+      totalStudents: 580,
+      avgReadinessScore: 74,
+      placementRate: 72,
+      activeInternships: 420,
+      topSkills: ['Verilog / VHDL', 'FPGA Prototyping', 'Embedded C', 'Circuit Analysis & SPICE'],
+      criticalGaps: ['Cadence / Synopsys EDA', 'SystemVerilog UVM', 'High-Speed PCB Design']
+    },
+    {
+      name: 'Mechanical, Robotics & Automotive EV',
+      totalStudents: 680,
+      avgReadinessScore: 68,
+      placementRate: 66,
+      activeInternships: 440,
+      topSkills: ['SolidWorks CAD', 'Kinematics & Dynamics', 'Thermodynamics', 'GD&T'],
+      criticalGaps: ['ROS 2 / Autonomous Navigation', 'Ansys FEA / CFD', 'EV Battery Thermal Management']
+    },
+    {
+      name: 'Civil & Smart Infrastructure Engineering',
+      totalStudents: 490,
+      avgReadinessScore: 71,
+      placementRate: 64,
+      activeInternships: 310,
+      topSkills: ['Reinforced Concrete (IS 456)', 'AutoCAD Civil 3D', 'Surveying & GIS', 'Geotechnical Engg'],
+      criticalGaps: ['Structural Analysis (STAAD.Pro)', 'Autodesk Revit BIM (LOD 350)', 'Pre-stressed Bridge Design']
+    },
+    {
+      name: 'Electrical, Power Systems & Renewable Energy',
       totalStudents: 520,
       avgReadinessScore: 72,
-      placementRate: 68,
-      activeInternships: 380,
-      topSkills: ['Verilog / VHDL', 'FPGA Prototyping', 'Embedded C', 'MATLAB / Simulink'],
-      criticalGaps: ['Industry EDA Tools (Cadence/Synopsys)', 'Formal Verification', 'AUTOSAR']
-    },
-    {
-      name: 'AI & Data Science (AID)',
-      totalStudents: 560,
-      avgReadinessScore: 70,
-      placementRate: 73,
-      activeInternships: 460,
-      topSkills: ['Python', 'Machine Learning', 'Pandas & NumPy', 'SQL & Data Pipelines'],
-      criticalGaps: ['MLOps & Model Deployment', 'CUDA & GPU Programming', 'Cloud (AWS / GCP)']
-    },
-    {
-      name: 'Mechanical & Robotics Engineering',
-      totalStudents: 680,
-      avgReadinessScore: 65,
-      placementRate: 62,
-      activeInternships: 410,
-      topSkills: ['CAD (SolidWorks / CATIA)', 'MATLAB / Simulink', 'FEM Analysis'],
-      criticalGaps: ['ROS & Motion Planning', 'Embedded C for ARM', 'Control Systems Implementation']
+      placementRate: 69,
+      activeInternships: 360,
+      topSkills: ['MATLAB / Simulink', 'Power Electronics', 'Circuit Analysis', 'Power Systems'],
+      criticalGaps: ['Battery Management Systems (BMS)', 'Motor Drives & FOC', 'IEC 61850 Substation SCADA']
     }
   ],
   industrySkillTrends: [
     {
-      skill: 'Python & Data Analytics',
+      skill: 'Python, ML & Data Pipelines',
       industryDemandPercent: 92,
-      curriculumCoveragePercent: 82,
+      curriculumCoveragePercent: 80,
       gapStatus: 'Aligned'
     },
     {
-      skill: 'Machine Learning / Deep Learning (TensorFlow / PyTorch)',
-      industryDemandPercent: 90,
-      curriculumCoveragePercent: 52,
-      gapStatus: 'Critical Gap'
-    },
-    {
-      skill: 'CUDA & GPU Accelerated Computing',
-      industryDemandPercent: 78,
-      curriculumCoveragePercent: 28,
-      gapStatus: 'Critical Gap'
-    },
-    {
-      skill: 'Cloud (AWS / GCP) & Docker/Kubernetes',
-      industryDemandPercent: 86,
-      curriculumCoveragePercent: 45,
-      gapStatus: 'Critical Gap'
-    },
-    {
-      skill: 'Verilog / VHDL & FPGA Design',
-      industryDemandPercent: 74,
-      curriculumCoveragePercent: 68,
+      skill: 'Verilog / VHDL & FPGA Chip Design',
+      industryDemandPercent: 88,
+      curriculumCoveragePercent: 62,
       gapStatus: 'Moderate Gap'
     },
     {
-      skill: 'Data Structures & Algorithms (DSA)',
-      industryDemandPercent: 88,
-      curriculumCoveragePercent: 84,
-      gapStatus: 'Aligned'
+      skill: 'SolidWorks CAD & Ansys FEA Simulation',
+      industryDemandPercent: 85,
+      curriculumCoveragePercent: 58,
+      gapStatus: 'Critical Gap'
     },
     {
-      skill: 'Technical Communication & Research Writing',
+      skill: 'ROS 2 & Autonomous Mobile Robotics',
       industryDemandPercent: 82,
-      curriculumCoveragePercent: 72,
-      gapStatus: 'Aligned'
+      curriculumCoveragePercent: 32,
+      gapStatus: 'Critical Gap'
+    },
+    {
+      skill: 'STAAD.Pro & Revit BIM Structural Modeling',
+      industryDemandPercent: 84,
+      curriculumCoveragePercent: 48,
+      gapStatus: 'Critical Gap'
+    },
+    {
+      skill: 'Power Electronics & EV Battery Management (BMS)',
+      industryDemandPercent: 89,
+      curriculumCoveragePercent: 44,
+      gapStatus: 'Critical Gap'
+    },
+    {
+      skill: 'Cloud (AWS / GCP) & Distributed Systems',
+      industryDemandPercent: 86,
+      curriculumCoveragePercent: 45,
+      gapStatus: 'Critical Gap'
     }
   ]
 };

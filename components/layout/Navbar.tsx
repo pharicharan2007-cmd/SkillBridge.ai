@@ -15,19 +15,28 @@ import {
   ShieldCheck,
   CheckCircle2,
   ChevronDown,
-  Award
+  Award,
+  LogOut,
+  User
 } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
   const router = useRouter();
-  const { currentRole, setCurrentRole, student } = useStudent();
+  const { currentRole, setCurrentRole, student, logout } = useStudent();
   const [showRoleMenu, setShowRoleMenu] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showUserMenu, setShowUserMenu] = useState(false);
+
+  const handleSignOut = async () => {
+    setShowUserMenu(false);
+    await logout();
+    router.push('/login');
+  };
 
   const roles: { role: UserRole; label: string; icon: any; route: string; badge: string }[] = [
     { role: 'student', label: 'Student', icon: GraduationCap, route: '/dashboard', badge: 'Student Portal' },
-    { role: 'recruiter', label: 'Industry Recruiter', icon: Building2, route: '/industry', badge: 'Employer Portal' },
-    { role: 'faculty', label: 'Faculty / Academician', icon: BookOpenCheck, route: '/faculty', badge: 'Research & FDP' },
+    { role: 'recruiter', label: 'Industry Recruiter', icon: Building2, route: '/recruiter', badge: 'Live DB Hiring' },
+    { role: 'faculty', label: 'Faculty / Academician', icon: BookOpenCheck, route: '/faculty', badge: 'Live Endorsements' },
     { role: 'institution', label: 'Institution Admin', icon: ShieldCheck, route: '/institution', badge: 'Campus Analytics' },
   ];
 
@@ -186,31 +195,107 @@ export const Navbar: React.FC = () => {
             )}
           </div>
 
-          {/* User Profile */}
-          <Link href={currentRole === 'student' ? '/profile' : currentRoleMeta.route} className="flex items-center gap-2.5 pl-2 border-l border-slate-200 dark:border-slate-800 hover:opacity-90 transition">
-            <div className="relative">
-              <img
-                src={student.avatar}
-                alt={student.name}
-                className="w-7 h-7 rounded-full object-cover ring-1 ring-slate-200 dark:ring-slate-700"
-              />
-              <span className="absolute bottom-0 right-0 w-2 h-2 bg-emerald-500 border-2 border-white dark:border-slate-900 rounded-full" />
-            </div>
-            <div className="hidden lg:block text-left">
-              <div className="text-xs font-medium text-slate-800 dark:text-slate-200 leading-none">
-                {currentRole === 'student' ? student.name 
-                  : currentRole === 'faculty' ? 'Dr. Priya Raghunathan' 
-                  : currentRole === 'recruiter' ? 'TCS iON Campus Team' 
-                  : 'DTU — Office of Career Services'}
+          {/* User Profile & Menu */}
+          <div className="relative pl-2 border-l border-slate-200 dark:border-slate-800">
+            <button
+              onClick={() => {
+                setShowUserMenu(!showUserMenu);
+                setShowRoleMenu(false);
+                setShowNotifications(false);
+              }}
+              className="flex items-center gap-2.5 hover:opacity-90 transition p-1 rounded-lg focus:outline-none"
+              title="Account & Profile Settings"
+            >
+              <div className="relative">
+                <img
+                  src={student.avatar}
+                  alt={student.name}
+                  className="w-7 h-7 rounded-full object-cover ring-1 ring-slate-200 dark:ring-slate-700"
+                />
+                <span className="absolute bottom-0 right-0 w-2 h-2 bg-emerald-500 border-2 border-white dark:border-slate-900 rounded-full" />
               </div>
-              <div className="text-[10px] text-slate-500 dark:text-slate-400 mt-1 truncate max-w-[130px]">
-                {currentRole === 'student' ? `${student.branch} • ${student.institution}`
-                  : currentRole === 'faculty' ? 'EED, Delhi Technological University'
-                  : currentRole === 'recruiter' ? 'Tata Consultancy Services'
-                  : 'AICTE Affiliated · NAAC A+'}
+              <div className="hidden lg:block text-left">
+                <div className="text-xs font-medium text-slate-800 dark:text-slate-200 leading-none flex items-center gap-1">
+                  <span>
+                    {currentRole === 'student' ? student.name 
+                      : currentRole === 'faculty' ? 'Dr. Priya Raghunathan' 
+                      : currentRole === 'recruiter' ? 'TCS iON Campus Team' 
+                      : 'DTU — Office of Career Services'}
+                  </span>
+                  <ChevronDown className="w-3 h-3 text-slate-400" />
+                </div>
+                <div className="text-[10px] text-slate-500 dark:text-slate-400 mt-1 truncate max-w-[130px]">
+                  {currentRole === 'student' ? `${student.branch} • ${student.institution}`
+                    : currentRole === 'faculty' ? 'EED, Delhi Technological University'
+                    : currentRole === 'recruiter' ? 'Tata Consultancy Services'
+                    : 'AICTE Affiliated · NAAC A+'}
+                </div>
               </div>
-            </div>
-          </Link>
+            </button>
+
+            {/* Dropdown Menu */}
+            {showUserMenu && (
+              <div className="absolute right-0 mt-2 w-64 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl p-3 z-50 animate-in fade-in slide-in-from-top-1 duration-150 space-y-3">
+                {/* User Summary */}
+                <div className="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/70 border border-slate-100 dark:border-slate-800 space-y-1">
+                  <div className="text-xs font-semibold text-slate-900 dark:text-white truncate">
+                    {currentRole === 'student' ? student.name : currentRoleMeta.label}
+                  </div>
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
+                    {student.email || 'aditya.v@dtu.ac.in'}
+                  </div>
+                  {currentRole === 'student' && student.studentUid && (
+                    <div className="pt-1">
+                      <div className="text-[10px] font-mono font-semibold text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-900 px-2 py-0.5 rounded flex items-center justify-between">
+                        <span>UID: {student.studentUid}</span>
+                        <span className="text-[9px] text-emerald-600 dark:text-emerald-400 font-sans">AICTE</span>
+                      </div>
+                    </div>
+                  )}
+                  <div className="pt-1 flex items-center gap-1.5">
+                    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
+                      <CheckCircle2 className="w-2.5 h-2.5" />
+                      <span>Verified Auth</span>
+                    </span>
+                    <span className="text-[10px] text-slate-400 dark:text-slate-500">
+                      {currentRoleMeta.badge}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Actions */}
+                <div className="space-y-1 text-xs">
+                  <Link
+                    href="/profile"
+                    onClick={() => setShowUserMenu(false)}
+                    className="flex items-center gap-2 px-2.5 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-medium transition"
+                  >
+                    <User className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+                    <span>View Full Profile & Verification</span>
+                  </Link>
+                  <Link
+                    href="/dashboard"
+                    onClick={() => setShowUserMenu(false)}
+                    className="flex items-center gap-2 px-2.5 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-medium transition"
+                  >
+                    <GraduationCap className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
+                    <span>Student Dashboard</span>
+                  </Link>
+                </div>
+
+                <div className="border-t border-slate-200 dark:border-slate-800 pt-2">
+                  <button
+                    type="button"
+                    onClick={handleSignOut}
+                    className="w-full flex items-center gap-2 px-2.5 py-2 rounded-lg text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 text-xs font-semibold transition text-left"
+                  >
+                    <LogOut className="w-3.5 h-3.5" />
+                    <span>Sign Out</span>
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
 
         </div>
       </div>

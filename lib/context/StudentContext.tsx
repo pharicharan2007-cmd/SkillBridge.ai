@@ -12,7 +12,9 @@ import {
   CollaborationInitiative,
   MentorshipSession,
   LearningResource,
-  StudentPortfolioProject
+  StudentPortfolioProject,
+  DocumentRecord,
+  VerificationLog
 } from '@/types';
 import { MOCK_STUDENTS } from '@/lib/mockData/students';
 import { MOCK_OPPORTUNITIES } from '@/lib/mockData/opportunities';
@@ -20,7 +22,18 @@ import { MOCK_FACULTY_OPPORTUNITIES, MOCK_FACULTY_APPLICATIONS } from '@/lib/moc
 import { MOCK_COLLABORATION_INITIATIVES, MOCK_MENTORSHIP_SESSIONS } from '@/lib/mockData/collaborationData';
 import { MOCK_INSTITUTION_DATA, InstitutionSummary } from '@/lib/mockData/institutionData';
 import { MOCK_LEARNING_RESOURCES } from '@/lib/mockData/learningResources';
+import { INITIAL_DOCUMENTS, INITIAL_VERIFICATION_LOGS } from '@/lib/mockData/documentData';
 import { calculateOpportunityMatch } from '@/lib/services/matchEngine';
+import { 
+  verifyCertificate, 
+  verifyAcademicRecord, 
+  verifyInternshipRecord, 
+  verifyGenericDocumentOCR,
+  verifyIdProof
+} from '@/lib/services/verificationEngine';
+import { toastService } from '@/components/common/Toast';
+import { supabase } from '@/lib/supabase/client';
+import { computeStudentSkillGaps, getDefaultRoleForCluster, resolveStudentCluster, getDefaultSkillsForCluster, generateIndianStudentUID } from '@/lib/constants/benchmarks';
 
 interface StudentContextType {
   currentRole: UserRole;
@@ -36,6 +49,9 @@ interface StudentContextType {
   mentorshipSessions: MentorshipSession[];
   institutionData: InstitutionSummary;
   learningResources: LearningResource[];
+  documents: DocumentRecord[];
+  verificationLogs: VerificationLog[];
+  automationRate: number; // Percentage auto-verified or rejected
   
   // Actions
   submitAssessment: (answers: Record<string, number>) => void;
@@ -44,6 +60,20 @@ interface StudentContextType {
   updateTargetRole: (role: string) => void;
   getOpportunityById: (id: string) => Opportunity | undefined;
   
+  // Smart Automated Verification Actions
+  processDocumentVerification: (docInput: {
+    studentId: string;
+    category: DocumentRecord['category'];
+    title: string;
+    filePath: string;
+    fileBlob?: File | Blob;
+    issuer?: string;
+    certificateId?: string;
+    cgpa?: number;
+    enrollmentNumber?: string;
+  }) => Promise<DocumentRecord>;
+  resolveExceptionDocument: (documentId: string, decision: 'approve' | 'reject', reviewNote?: string) => void;
+  
   // Industry / Recruiter Actions
   addOpportunity: (opportunity: Omit<Opportunity, 'id'>) => Opportunity;
   updateApplicationStatus: (applicationId: string, newStatus: ApplicationRecord['status']) => void;
@@ -51,6 +81,7 @@ interface StudentContextType {
   
   // Academician Actions
   applyFacultyOpportunity: (opportunityId: string, proposalNote: string) => boolean;
+  updateFacultyApplicationStatus: (applicationId: string, newStatus: FacultyApplication['status'], feedback?: string) => void;
   
   // Student Portfolio Actions
   addProjectToPortfolio: (project: Omit<StudentPortfolioProject, 'id'>) => void;
@@ -61,6 +92,9 @@ interface StudentContextType {
   
   // Mentorship & Collaboration Actions
   bookMentorshipSlot: (mentorId: string, slot: string) => boolean;
+
+  // Authentication Actions
+  logout: () => Promise<void>;
 }
 
 const StudentContext = createContext<StudentContextType | undefined>(undefined);
@@ -141,12 +175,25 @@ export const StudentProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [mentorshipSessions, setMentorshipSessions] = useState<MentorshipSession[]>(MOCK_MENTORSHIP_SESSIONS);
   const [institutionData, setInstitutionData] = useState<InstitutionSummary>(MOCK_INSTITUTION_DATA);
   const [learningResources, setLearningResources] = useState<LearningResource[]>(MOCK_LEARNING_RESOURCES);
+  const [documents, setDocuments] = useState<DocumentRecord[]>(INITIAL_DOCUMENTS);
+  const [verificationLogs, setVerificationLogs] = useState<VerificationLog[]>(INITIAL_VERIFICATION_LOGS);
+
+  // Compute live automation rate: auto-verified or rejected vs total logs
+  const autoProcessedCount = verificationLogs.filter(l => l.method !== 'manual_exception').length;
+  const totalLogsCount = verificationLogs.length || 1;
+  const automationRate = Math.round((autoProcessedCount / totalLogsCount) * 100);
 
   // Load any local storage cache safely on mount
   useEffect(() => {
     try {
       const savedRole = localStorage.getItem('skillbridge_role') as UserRole | null;
       if (savedRole) setCurrentRoleState(savedRole);
+
+      const savedDocs = localStorage.getItem('skillbridge_documents');
+      if (savedDocs) setDocuments(JSON.parse(savedDocs));
+
+      const savedLogs = localStorage.getItem('skillbridge_verification_logs');
+      if (savedLogs) setVerificationLogs(JSON.parse(savedLogs));
 
       const savedOpps = localStorage.getItem('skillbridge_opportunities');
       if (savedOpps) setRawOpportunities(JSON.parse(savedOpps));
@@ -160,6 +207,17 @@ export const StudentProvider: React.FC<{ children: React.ReactNode }> = ({ child
       const savedStudent = localStorage.getItem('skillbridge_registered_student');
       if (savedStudent) {
         const parsed = JSON.parse(savedStudent);
+        parsed.engineeringCluster = resolveStudentCluster(parsed);
+        if (!parsed.targetRole || parsed.targetRole === 'Engineering Student') {
+          parsed.targetRole = getDefaultRoleForCluster(parsed.engineeringCluster);
+        }
+        if (!parsed.skills || parsed.skills.length === 0) {
+          parsed.skills = getDefaultSkillsForCluster(parsed.engineeringCluster);
+        }
+        if (!parsed.studentUid) {
+          parsed.studentUid = generateIndianStudentUID(parsed);
+        }
+        parsed.topGaps = computeStudentSkillGaps(parsed);
         setStudent(parsed);
         setAllStudents(prev => {
           const exists = prev.some(s => s.id === parsed.id);
@@ -168,11 +226,161 @@ export const StudentProvider: React.FC<{ children: React.ReactNode }> = ({ child
           }
           return [parsed, ...prev];
         });
+        try {
+          localStorage.setItem('skillbridge_registered_student', JSON.stringify(parsed));
+        } catch (e) {}
       }
     } catch (e) {
       console.warn('LocalStorage error or not available', e);
     }
   }, []);
+
+  // Supabase Auth Session Listener & Profile Synchronization
+  useEffect(() => {
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL) return;
+
+    try {
+      const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+        if (session?.user) {
+          const u = session.user;
+          const fullName = u.user_metadata?.full_name || u.user_metadata?.name || u.email?.split('@')[0] || 'Engineering Student';
+          const avatarUrl = u.user_metadata?.avatar_url || u.user_metadata?.picture || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=256';
+          
+          setStudent(prev => {
+            const updated = {
+              ...prev,
+              email: u.email || prev.email,
+              name: fullName || prev.name,
+              avatar: avatarUrl || prev.avatar,
+            };
+            try {
+              localStorage.setItem('skillbridge_registered_student', JSON.stringify(updated));
+            } catch (e) {}
+            return updated;
+          });
+        }
+      });
+
+      return () => {
+        subscription.unsubscribe();
+      };
+    } catch (e) {}
+  }, []);
+
+  // Supabase Realtime Subscription: Sync document verification & student profile live
+  useEffect(() => {
+    if (!student?.id || !process.env.NEXT_PUBLIC_SUPABASE_URL) return;
+
+    try {
+      const channel = supabase
+        .channel(`documents:student:${student.id}`)
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'document_records',
+            filter: `student_id=eq.${student.id}`,
+          },
+          async (payload) => {
+            try {
+              // Sync updated student profile & readiness score from Supabase
+              const { data, error } = await supabase
+                .from('students')
+                .select('*')
+                .eq('id', student.id)
+                .single();
+
+              if (!error && data) {
+                setStudent(prev => ({ ...prev, ...data }));
+                setAllStudents(prev => prev.map(s => s.id === data.id ? { ...s, ...data } : s));
+              }
+
+              // Also sync updated documents for this student
+              const { data: updatedDocs } = await supabase
+                .from('document_records')
+                .select('*')
+                .eq('student_id', student.id);
+
+              if (updatedDocs && updatedDocs.length > 0) {
+                setDocuments(prev => {
+                  const map = new Map(prev.map(d => [d.id, d]));
+                  updatedDocs.forEach((d: any) => {
+                    map.set(d.id, {
+                      id: d.id,
+                      studentId: d.student_id,
+                      studentName: student.name,
+                      studentEmail: student.email,
+                      category: d.document_type || 'certifications',
+                      title: d.title || 'Verified Document',
+                      filePath: d.file_path,
+                      verificationStatus: d.verification_status,
+                      verificationMethod: d.verification_method,
+                      flaggedReason: d.flagged_reason,
+                      submittedAt: d.created_at,
+                      verifiedAt: d.updated_at
+                    });
+                  });
+                  return Array.from(map.values());
+                });
+              }
+            } catch (fetchErr) {
+              console.warn('Realtime profile sync error:', fetchErr);
+            }
+          }
+        )
+        .on(
+          'postgres_changes',
+          {
+            event: 'UPDATE',
+            schema: 'public',
+            table: 'students',
+            filter: `id=eq.${student.id}`
+          },
+          (payload) => {
+            const updatedData = payload.new;
+            if (updatedData.readiness_score !== undefined) {
+              setStudent(prev => ({ ...prev, readinessScore: updatedData.readiness_score, targetRole: updatedData.target_role_id || prev.targetRole }));
+            }
+          }
+        )
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'skill_scores',
+            filter: `student_id=eq.${student.id}`
+          },
+          async (payload) => {
+            // Re-fetch skill scores to sync with the mock context
+            const { data: scores } = await supabase
+              .from('skill_scores')
+              .select('*')
+              .eq('student_id', student.id);
+            if (scores && scores.length > 0) {
+              setStudent(prev => {
+                const updatedSkills = prev.skills.map(skill => {
+                  const sScore = scores.find((s: any) => s.skill_name === skill.name);
+                  if (sScore) {
+                    return { ...skill, level: sScore.score, verified: sScore.verification_status !== 'unverified' };
+                  }
+                  return skill;
+                });
+                return { ...prev, skills: updatedSkills };
+              });
+            }
+          }
+        )
+        .subscribe();
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
+    } catch (subErr) {
+      console.warn('Realtime subscription initialization error:', subErr);
+    }
+  }, [student?.id]);
 
   const setCurrentRole = (role: UserRole) => {
     setCurrentRoleState(role);
@@ -211,10 +419,18 @@ export const StudentProvider: React.FC<{ children: React.ReactNode }> = ({ child
   };
 
   const updateTargetRole = (newRole: string) => {
-    setStudent(prev => ({
-      ...prev,
-      targetRole: newRole
-    }));
+    setStudent(prev => {
+      const updatedGaps = computeStudentSkillGaps({ ...prev, targetRole: newRole });
+      const updated = {
+        ...prev,
+        targetRole: newRole,
+        topGaps: updatedGaps
+      };
+      try {
+        localStorage.setItem('skillbridge_registered_student', JSON.stringify(updated));
+      } catch (e) {}
+      return updated;
+    });
   };
 
   const submitAssessment = (answers: Record<string, number>) => {
@@ -225,41 +441,19 @@ export const StudentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     const newReadinessScore = Math.max(40, Math.min(98, Math.round(avgScore * 0.95 + 10)));
 
     const updatedSkills = student.skills.map(skill => {
-      let levelBoost = 0;
-      if (skill.name.toLowerCase().includes('python') && answers['q-1']) levelBoost = Math.round(answers['q-1'] * 0.1);
-      if (skill.name.toLowerCase().includes('sql') && answers['q-3']) levelBoost = Math.round(answers['q-3'] * 0.1);
-      if (skill.name.toLowerCase().includes('tensorflow') && answers['q-4']) levelBoost = Math.round(answers['q-4'] * 0.15);
-      
-      const newLevel = Math.min(100, skill.level + levelBoost);
+      const boost = Math.min(15, Math.round((avgScore / 100) * 12));
+      const newLevel = Math.min(100, skill.level + boost);
       return {
         ...skill,
         level: newLevel,
-        verified: newLevel > 70 ? true : skill.verified
+        verified: newLevel >= 70 ? true : skill.verified
       };
     });
 
-    const newGaps: SkillGapItem[] = [
-      {
-        skillId: 'sk-4',
-        skillName: 'TensorFlow / PyTorch',
-        category: 'Technical',
-        currentLevel: Math.round(answers['q-4'] || 45),
-        requiredLevel: 80,
-        gapPercentage: Math.max(0, 80 - Math.round(answers['q-4'] || 45)),
-        priority: 'Critical',
-        recommendedAction: 'Complete Deep Learning Specialization & practical project.'
-      },
-      {
-        skillId: 'sk-24',
-        skillName: 'Cloud Computing (AWS)',
-        category: 'Digital Skills',
-        currentLevel: Math.round(answers['q-11'] || 60),
-        requiredLevel: 75,
-        gapPercentage: Math.max(0, 75 - Math.round(answers['q-11'] || 60)),
-        priority: 'High',
-        recommendedAction: 'Practice AWS EC2/S3 deployment labs.'
-      }
-    ];
+    const newGaps = computeStudentSkillGaps({
+      ...student,
+      skills: updatedSkills
+    });
 
     const updated = {
       ...student,
@@ -313,6 +507,7 @@ export const StudentProvider: React.FC<{ children: React.ReactNode }> = ({ child
       localStorage.setItem('skillbridge_applications', JSON.stringify(updated));
     } catch (e) {}
 
+    toastService.notify('success', `Application submitted to ${opp.company} successfully!`);
     return true;
   };
 
@@ -350,6 +545,44 @@ export const StudentProvider: React.FC<{ children: React.ReactNode }> = ({ child
           updatedTimeline.push({ step: 'Formal Offer Issued', date: today, completed: true });
         }
 
+        // Auto-populate Digital Portfolio when Offered
+        if (newStatus === 'Offered' && app.status !== 'Offered') {
+          setStudent(prevStudent => {
+            if (prevStudent.email !== app.studentEmail) return prevStudent; // Only if it's current student
+            const newInternship = {
+              id: `int-${Date.now()}`,
+              role: app.opportunityTitle,
+              company: app.company,
+              duration: '6 Months (Upcoming)',
+              verified: true
+            };
+            const updatedProfile = {
+              ...prevStudent,
+              internshipsCompleted: [newInternship, ...(prevStudent.internshipsCompleted || [])]
+            };
+            try {
+              localStorage.setItem('skillbridge_registered_student', JSON.stringify(updatedProfile));
+            } catch (e) {}
+            return updatedProfile;
+          });
+          
+          // Also update in allStudents
+          setAllStudents(prevAll => prevAll.map(s => {
+            if (s.email !== app.studentEmail) return s;
+            const newInternship = {
+              id: `int-${Date.now()}`,
+              role: app.opportunityTitle,
+              company: app.company,
+              duration: '6 Months (Upcoming)',
+              verified: true
+            };
+            return {
+              ...s,
+              internshipsCompleted: [newInternship, ...(s.internshipsCompleted || [])]
+            };
+          }));
+        }
+
         return {
           ...app,
           status: newStatus,
@@ -363,6 +596,7 @@ export const StudentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     try {
       localStorage.setItem('skillbridge_applications', JSON.stringify(updated));
     } catch (e) {}
+    toastService.notify('success', `Candidate stage updated to ${newStatus}`);
   };
 
   // Industry / Recruiter: Publish new course or workshop
@@ -403,6 +637,41 @@ export const StudentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     return true;
   };
 
+  // Academician: Update Faculty Internship / FDP / Research status
+  const updateFacultyApplicationStatus = (applicationId: string, newStatus: FacultyApplication['status'], feedback?: string) => {
+    const updated = facultyApplications.map(app => {
+      if (app.id === applicationId) {
+        
+        // Auto-populate Project Portfolio if Completed
+        if (newStatus === 'Completed' && app.status !== 'Completed') {
+          const newProject = {
+            id: `proj-${Date.now()}`,
+            title: `Capstone / Research: ${app.opportunityTitle}`,
+            description: `Research collaboration with ${app.organization}. Faculty Feedback: ${feedback || 'Successfully completed research deliverables.'}`,
+            techStack: ['Research', app.type],
+            verifiedBy: app.facultyName
+          };
+          setStudent(prev => ({
+            ...prev,
+            projects: [newProject, ...(prev.projects || [])]
+          }));
+        }
+
+        return {
+          ...app,
+          status: newStatus,
+          proposalNote: feedback ? `${app.proposalNote}\n\n[Faculty Feedback]: ${feedback}` : app.proposalNote
+        };
+      }
+      return app;
+    });
+
+    setFacultyApplications(updated);
+    try {
+      localStorage.setItem('skillbridge_faculty_applications', JSON.stringify(updated));
+    } catch (e) {}
+  };
+
   // Student: Add Project to Verified Portfolio
   const addProjectToPortfolio = (project: Omit<StudentPortfolioProject, 'id'>) => {
     const newProject: StudentPortfolioProject = {
@@ -418,6 +687,19 @@ export const StudentProvider: React.FC<{ children: React.ReactNode }> = ({ child
   // Registration: Create new student and set as active session
   const registerStudent = (data: Partial<StudentProfile>): StudentProfile => {
     const newId = `std-${Date.now()}`;
+    const resolvedCluster = data.engineeringCluster || resolveStudentCluster(data);
+    const resolvedRole = data.targetRole || getDefaultRoleForCluster(resolvedCluster);
+    const resolvedSkills = (data.skills && data.skills.length > 0) 
+      ? data.skills 
+      : getDefaultSkillsForCluster(resolvedCluster);
+
+    const initialGaps = computeStudentSkillGaps({
+      targetRole: resolvedRole,
+      engineeringCluster: resolvedCluster,
+      branch: data.branch,
+      skills: resolvedSkills
+    });
+
     const newStudent: StudentProfile = {
       id: newId,
       name: data.name || 'New Student',
@@ -426,36 +708,31 @@ export const StudentProvider: React.FC<{ children: React.ReactNode }> = ({ child
       institution: data.institution || data.college || 'Delhi Technological University (DTU)',
       college: data.college || data.institution || 'Delhi Technological University (DTU)',
       degree: data.degree || 'B.Tech',
-      branch: data.branch || 'Computer Science and Engineering',
+      branch: data.branch || 'Electronics & Communication (VLSI & Embedded)',
+      engineeringCluster: resolvedCluster,
       year: data.year || 3,
       semester: data.semester || 6,
-      cgpa: data.cgpa || 8.5,
-      readinessScore: data.readinessScore || 52,
-      targetRole: data.targetRole || 'Software Engineer',
-      careerInterests: data.careerInterests || ['Software Engineering', 'Cloud & Systems'],
-      enrollmentNumber: data.enrollmentNumber || '2K23/CO/201',
+      cgpa: data.cgpa || 0,
+      readinessScore: data.readinessScore !== undefined ? data.readinessScore : 0,
+      targetRole: resolvedRole,
+      careerInterests: data.careerInterests || [],
+      enrollmentNumber: data.enrollmentNumber || '',
+      studentUid: data.studentUid || generateIndianStudentUID({
+        institution: data.institution || data.college,
+        college: data.college || data.institution,
+        degree: data.degree,
+        branch: data.branch,
+        graduationYear: data.graduationYear,
+        enrollmentNumber: data.enrollmentNumber,
+        semester: data.semester
+      }),
       graduationYear: data.graduationYear || 2026,
       verificationStatus: 'Pending',
       verificationType: 'COLLEGE_ID',
-      collegeIdProof: data.collegeIdProof || 'student_id_card.pdf',
+      collegeIdProof: data.collegeIdProof || '',
       assessmentCompleted: false,
-      skills: data.skills && data.skills.length > 0 ? data.skills : [
-        { id: 'sk-1', name: 'Python', category: 'Technical', level: 75, verified: false, demandLevel: 'Critical' },
-        { id: 'sk-9', name: 'Data Structures & Algorithms', category: 'Technical', level: 70, verified: false, demandLevel: 'High' },
-        { id: 'sk-5', name: 'React.js', category: 'Technical', level: 68, verified: false, demandLevel: 'High' }
-      ],
-      topGaps: [
-        {
-          skillId: 'sk-24',
-          skillName: 'Cloud Computing (AWS)',
-          category: 'Digital Skills',
-          currentLevel: 40,
-          requiredLevel: 75,
-          gapPercentage: 35,
-          priority: 'Critical',
-          recommendedAction: 'Complete AWS Academy Cloud Foundations & build deployment project.'
-        }
-      ],
+      skills: resolvedSkills,
+      topGaps: initialGaps,
       certifications: [],
       projects: []
     };
@@ -470,27 +747,302 @@ export const StudentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     return newStudent;
   };
 
-  // Institution TPO: Approve student verification
-  const verifyStudentCredential = (studentId: string) => {
-    setAllStudents(prev => prev.map(s => {
-      if (s.id === studentId) {
-        return { ...s, verificationStatus: 'Verified' as const };
-      }
-      return s;
-    }));
+  // Smart Automated Verification Processing
+  const processDocumentVerification = async (docInput: {
+    studentId: string;
+    category: DocumentRecord['category'];
+    title: string;
+    filePath: string;
+    fileBlob?: File | Blob;
+    issuer?: string;
+    certificateId?: string;
+    cgpa?: number;
+    enrollmentNumber?: string;
+  }): Promise<DocumentRecord> => {
+    const targetStudent = allStudents.find(s => s.id === docInput.studentId) || student;
+    let result;
 
-    if (student.id === studentId) {
-      const updated = { ...student, verificationStatus: 'Verified' as const };
-      setStudent(updated);
-      try {
-        localStorage.setItem('skillbridge_registered_student', JSON.stringify(updated));
-      } catch (e) {}
+    if (docInput.category === 'certifications') {
+      result = await verifyCertificate(
+        docInput.certificateId, 
+        docInput.issuer, 
+        docInput.title || docInput.filePath,
+        docInput.fileBlob || docInput.filePath
+      );
+    } else if (docInput.category === 'transcripts') {
+      result = await verifyAcademicRecord(targetStudent, {
+        cgpa: docInput.cgpa,
+        enrollmentNumber: docInput.enrollmentNumber,
+        name: targetStudent.name,
+        fileName: docInput.title || docInput.filePath,
+        fileBlob: docInput.fileBlob || docInput.filePath
+      });
+    } else if (docInput.category === 'internship_reports') {
+      result = verifyInternshipRecord(docInput.issuer || docInput.title, applications, targetStudent.email);
+    } else if (docInput.category === 'id_proofs') {
+      result = await verifyIdProof(targetStudent, {
+        fileName: docInput.title || docInput.filePath,
+        fileBlob: docInput.fileBlob || docInput.filePath
+      });
+    } else {
+      result = verifyGenericDocumentOCR(docInput.filePath || docInput.title, targetStudent);
     }
+
+    const newDocId = `doc-${Date.now()}`;
+    const newDoc: DocumentRecord = {
+      id: newDocId,
+      studentId: targetStudent.id,
+      studentName: targetStudent.name,
+      studentEmail: targetStudent.email,
+      studentBranch: targetStudent.branch,
+      studentCgpa: targetStudent.cgpa,
+      studentEnrollmentNumber: targetStudent.enrollmentNumber,
+      category: docInput.category,
+      title: docInput.title,
+      filePath: docInput.filePath,
+      issuer: docInput.issuer,
+      certificateId: docInput.certificateId,
+      verificationStatus: result.status,
+      verificationMethod: result.method,
+      flaggedReason: result.flaggedReason,
+      extractedData: result.extractedData,
+      submittedAt: new Date().toISOString(),
+      verifiedAt: result.status === 'verified' ? new Date().toISOString() : undefined,
+      verifiedBy: result.verifiedBy
+    };
+
+    // Create Audit Log
+    const newLog: VerificationLog = {
+      id: `vlog-${Date.now()}`,
+      documentId: newDocId,
+      studentId: targetStudent.id,
+      oldStatus: 'pending',
+      newStatus: result.status,
+      method: result.method,
+      reason: result.flaggedReason || (result.status === 'verified' ? 'Automated check completed successfully' : 'Validation check failed'),
+      timestamp: new Date().toISOString(),
+      actor: result.verifiedBy || 'Automated Verification Engine'
+    };
+
+    const updatedDocs = [newDoc, ...documents];
+    const updatedLogs = [newLog, ...verificationLogs];
+    setDocuments(updatedDocs);
+    setVerificationLogs(updatedLogs);
+
+    try {
+      localStorage.setItem('skillbridge_documents', JSON.stringify(updatedDocs));
+      localStorage.setItem('skillbridge_verification_logs', JSON.stringify(updatedLogs));
+    } catch (e) {}
+
+    // Real-Time State Propagation if Verified (Idempotent)
+    if (result.status === 'verified') {
+      const isCurrentStudent = student.id === targetStudent.id;
+      const docUniqueKey = (docInput.certificateId && docInput.certificateId.trim())
+        ? `ID_${docInput.certificateId.trim().toUpperCase()}`
+        : `${docInput.category}_${(docInput.title || '').trim().toLowerCase()}_${(docInput.issuer || '').trim().toLowerCase()}`;
+      
+      const alreadyCredited = (targetStudent.verifiedDocumentIds || []).includes(docUniqueKey);
+      
+      // Update Digital Portfolio & Boost Readiness Score
+      if (docInput.category === 'certifications') {
+        const newCert = {
+          id: `cert-${Date.now()}`,
+          title: docInput.title,
+          issuer: docInput.issuer || 'Accredited Issuer',
+          issueDate: new Date().toISOString().split('T')[0],
+          verified: true,
+          credentialId: docInput.certificateId || `VERIFIED-${Date.now()}`
+        };
+
+        const scoreBoost = alreadyCredited ? 0 : 4;
+
+        if (isCurrentStudent) {
+          setStudent(prev => ({
+            ...prev,
+            certifications: [newCert, ...(prev.certifications || [])],
+            readinessScore: Math.min(100, (prev.readinessScore || 0) + scoreBoost),
+            verifiedDocumentIds: alreadyCredited ? prev.verifiedDocumentIds : [...(prev.verifiedDocumentIds || []), docUniqueKey]
+          }));
+        }
+
+        setAllStudents(prev => prev.map(s => {
+          if (s.id === targetStudent.id) {
+            return {
+              ...s,
+              certifications: [newCert, ...(s.certifications || [])],
+              readinessScore: Math.min(100, (s.readinessScore || 0) + scoreBoost),
+              verifiedDocumentIds: alreadyCredited ? s.verifiedDocumentIds : [...(s.verifiedDocumentIds || []), docUniqueKey]
+            };
+          }
+          return s;
+        }));
+      } else if (docInput.category === 'transcripts') {
+        const scoreBoost = alreadyCredited ? 0 : 3;
+        if (isCurrentStudent) {
+          setStudent(prev => ({
+            ...prev,
+            verificationStatus: 'Verified',
+            readinessScore: Math.min(100, (prev.readinessScore || 0) + scoreBoost),
+            verifiedDocumentIds: alreadyCredited ? prev.verifiedDocumentIds : [...(prev.verifiedDocumentIds || []), docUniqueKey]
+          }));
+        }
+        setAllStudents(prev => prev.map(s => s.id === targetStudent.id ? { 
+          ...s, 
+          verificationStatus: 'Verified',
+          readinessScore: Math.min(100, (s.readinessScore || 0) + scoreBoost),
+          verifiedDocumentIds: alreadyCredited ? s.verifiedDocumentIds : [...(s.verifiedDocumentIds || []), docUniqueKey]
+        } : s));
+      } else if (docInput.category === 'internship_reports') {
+        const newInternship = {
+          id: `int-${Date.now()}`,
+          role: docInput.title,
+          company: docInput.issuer || 'Partner Corporation',
+          duration: '3 Months (Verified)',
+          verified: true
+        };
+        const scoreBoost = alreadyCredited ? 0 : 5;
+        if (isCurrentStudent) {
+          setStudent(prev => ({
+            ...prev,
+            internshipsCompleted: [newInternship, ...(prev.internshipsCompleted || [])],
+            readinessScore: Math.min(100, (prev.readinessScore || 0) + scoreBoost),
+            verifiedDocumentIds: alreadyCredited ? prev.verifiedDocumentIds : [...(prev.verifiedDocumentIds || []), docUniqueKey]
+          }));
+        }
+        setAllStudents(prev => prev.map(s => s.id === targetStudent.id ? {
+          ...s,
+          internshipsCompleted: [newInternship, ...(s.internshipsCompleted || [])],
+          readinessScore: Math.min(100, (s.readinessScore || 0) + scoreBoost),
+          verifiedDocumentIds: alreadyCredited ? s.verifiedDocumentIds : [...(s.verifiedDocumentIds || []), docUniqueKey]
+        } : s));
+      }
+
+      if (alreadyCredited) {
+        toastService.notify('info', `✓ Document Verified: Credential already recorded; readiness score kept intact without double-counting.`);
+      } else {
+        toastService.notify('success', `✓ Document Auto-Verified (${result.method.replace('_', ' ').toUpperCase()}): ${docInput.title} (+readiness score updated)`);
+      }
+    } else if (result.status === 'rejected') {
+      toastService.notify('error', `Automated Check Failed: ${result.flaggedReason || 'Certificate ID invalid'}`);
+    } else if (result.status === 'needs_review') {
+      toastService.notify('info', `Routed to Exception Review Queue: Discrepancy flagged for administrative check.`);
+    }
+
+    return newDoc;
+  };
+
+  // Institution Admin: Resolve Exception Document
+  const resolveExceptionDocument = (documentId: string, decision: 'approve' | 'reject', reviewNote?: string) => {
+    const doc = documents.find(d => d.id === documentId);
+    if (!doc) return;
+
+    const newStatus = decision === 'approve' ? 'verified' : 'rejected';
+
+    const updatedDocs = documents.map(d => {
+      if (d.id === documentId) {
+        return {
+          ...d,
+          verificationStatus: newStatus as DocumentRecord['verificationStatus'],
+          verifiedAt: new Date().toISOString(),
+          verifiedBy: 'Institution Admin (Manual Exception Override)',
+          flaggedReason: reviewNote ? `Exception resolved: ${reviewNote}` : d.flaggedReason
+        };
+      }
+      return d;
+    });
+
+    const newLog: VerificationLog = {
+      id: `vlog-${Date.now()}`,
+      documentId,
+      studentId: doc.studentId,
+      oldStatus: doc.verificationStatus,
+      newStatus: newStatus as DocumentRecord['verificationStatus'],
+      method: 'manual_exception',
+      reason: reviewNote || `TPO Manual Resolution: Marked ${newStatus}`,
+      timestamp: new Date().toISOString(),
+      actor: 'Institution Admin (TPO)'
+    };
+
+    setDocuments(updatedDocs);
+    setVerificationLogs([newLog, ...verificationLogs]);
+
+    try {
+      localStorage.setItem('skillbridge_documents', JSON.stringify(updatedDocs));
+      localStorage.setItem('skillbridge_verification_logs', JSON.stringify([newLog, ...verificationLogs]));
+    } catch (e) {}
+
+    // If approved, propagate to student (Idempotent)
+    if (decision === 'approve') {
+      const docUniqueKey = (doc.certificateId && doc.certificateId.trim())
+        ? `ID_${doc.certificateId.trim().toUpperCase()}`
+        : `${doc.category}_${(doc.title || '').trim().toLowerCase()}_${(doc.issuer || '').trim().toLowerCase()}`;
+
+      setAllStudents(prev => prev.map(s => {
+        if (s.id === doc.studentId) {
+          const alreadyCredited = (s.verifiedDocumentIds || []).includes(docUniqueKey);
+          if (alreadyCredited) {
+            return { ...s, verificationStatus: 'Verified' };
+          }
+          return {
+            ...s,
+            verificationStatus: 'Verified',
+            readinessScore: Math.min(100, (s.readinessScore || 0) + 4),
+            verifiedDocumentIds: [...(s.verifiedDocumentIds || []), docUniqueKey]
+          };
+        }
+        return s;
+      }));
+
+      setStudent(prev => {
+        if (prev.id === doc.studentId) {
+          const alreadyCredited = (prev.verifiedDocumentIds || []).includes(docUniqueKey);
+          if (alreadyCredited) {
+            return { ...prev, verificationStatus: 'Verified' };
+          }
+          return {
+            ...prev,
+            verificationStatus: 'Verified',
+            readinessScore: Math.min(100, (prev.readinessScore || 0) + 4),
+            verifiedDocumentIds: [...(prev.verifiedDocumentIds || []), docUniqueKey]
+          };
+        }
+        return prev;
+      });
+
+      toastService.notify('success', `Exception Approved: ${doc.title} verified and published.`);
+    } else {
+      toastService.notify('error', `Exception Rejected: ${doc.title} marked inactive.`);
+    }
+  };
+
+  // Backwards-compatible verifyStudentCredential helper
+  const verifyStudentCredential = (studentId: string) => {
+    setAllStudents(prev => prev.map(s => s.id === studentId ? { ...s, verificationStatus: 'Verified' as const } : s));
+    if (student.id === studentId) {
+      setStudent(prev => ({ ...prev, verificationStatus: 'Verified' as const }));
+    }
+    toastService.notify('success', `Credential verified for student.`);
   };
 
   // Mentorship Booking
   const bookMentorshipSlot = (mentorId: string, slot: string): boolean => {
     return true;
+  };
+
+  // Sign out user session & clear cache
+  const logout = async () => {
+    try {
+      await supabase.auth.signOut();
+    } catch (e) {}
+    try {
+      localStorage.removeItem('skillbridge_auth_provider');
+      localStorage.removeItem('skillbridge_auth_user');
+      localStorage.removeItem('skillbridge_registered_student');
+      localStorage.removeItem('skillbridge_last_assessment_result');
+    } catch (e) {}
+    setStudent(MOCK_STUDENTS[0]);
+    setCurrentRoleState('student');
+    toastService.notify('info', 'Signed out successfully.');
   };
 
   return (
@@ -509,19 +1061,26 @@ export const StudentProvider: React.FC<{ children: React.ReactNode }> = ({ child
         mentorshipSessions,
         institutionData,
         learningResources,
+        documents,
+        verificationLogs,
+        automationRate,
         submitAssessment,
         applyForOpportunity,
         toggleSaveOpportunity,
         updateTargetRole,
         getOpportunityById,
+        processDocumentVerification,
+        resolveExceptionDocument,
         addOpportunity,
         updateApplicationStatus,
         addLearningResource,
         applyFacultyOpportunity,
+        updateFacultyApplicationStatus,
         addProjectToPortfolio,
         registerStudent,
         verifyStudentCredential,
-        bookMentorshipSlot
+        bookMentorshipSlot,
+        logout
       }}
     >
       {children}

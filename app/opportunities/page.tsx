@@ -19,10 +19,20 @@ const DOMAINS = [
   'Research Internship',
 ];
 
+const ENGINEERING_CLUSTERS: { label: string; value: string }[] = [
+  { label: 'All Disciplines', value: 'All' },
+  { label: 'Electronics & VLSI', value: 'Electronics & Communication (VLSI & Embedded)' },
+  { label: 'Mechanical & Robotics', value: 'Mechanical, Robotics & Automotive EV' },
+  { label: 'Civil & Infrastructure', value: 'Civil & Smart Infrastructure' },
+  { label: 'Electrical & Power', value: 'Electrical, Power Systems & Renewable Energy' },
+  { label: 'Computer Science & AI', value: 'Computer Science & Information Technology' },
+];
+
 export default function OpportunitiesPage() {
   const { opportunities, applications, savedOpportunityIds, toggleSaveOpportunity } = useStudent();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedDomain, setSelectedDomain] = useState<string>('All');
+  const [selectedCluster, setSelectedCluster] = useState<string>('All');
   const [selectedOpportunity, setSelectedOpportunity] = useState<Opportunity | null>(null);
   const [activeTab, setActiveTab] = useState<'all' | 'saved'>('all');
 
@@ -32,8 +42,9 @@ export default function OpportunitiesPage() {
       opp.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
       opp.requiredSkills.some(s => s.toLowerCase().includes(searchTerm.toLowerCase()));
     const matchesDomain = selectedDomain === 'All' || opp.domain === selectedDomain;
+    const matchesCluster = selectedCluster === 'All' || opp.engineeringCluster === selectedCluster;
     const matchesSaved = activeTab === 'all' || savedOpportunityIds.includes(opp.id);
-    return matchesSearch && matchesDomain && matchesSaved;
+    return matchesSearch && matchesDomain && matchesCluster && matchesSaved;
   });
 
   return (
@@ -94,6 +105,29 @@ export default function OpportunitiesPage() {
                 <option key={d} value={d}>Domain: {d}</option>
               ))}
             </select>
+          </div>
+
+          {/* Engineering Discipline Filter Pills */}
+          <div className="flex items-center gap-1.5 overflow-x-auto pt-3 border-t border-slate-100 dark:border-slate-800/80">
+            <span className="text-[10px] uppercase font-mono tracking-wider text-slate-400 dark:text-slate-500 shrink-0 mr-1">
+              Discipline:
+            </span>
+            {ENGINEERING_CLUSTERS.map(c => {
+              const isActive = selectedCluster === c.value;
+              return (
+                <button
+                  key={c.value}
+                  onClick={() => setSelectedCluster(c.value)}
+                  className={`text-xs px-2.5 py-1 rounded-lg border font-medium whitespace-nowrap transition ${
+                    isActive
+                      ? 'bg-blue-600 text-white border-blue-500 shadow-sm'
+                      : 'bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-slate-400'
+                  }`}
+                >
+                  {c.label}
+                </button>
+              );
+            })}
           </div>
         </div>
 

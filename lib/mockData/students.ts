@@ -10,6 +10,7 @@ export const MOCK_STUDENTS: StudentProfile[] = [
     institution: 'Delhi Technological University (DTU)',
     degree: 'B.Tech',
     branch: 'Computer Science and Engineering',
+    engineeringCluster: 'Computer Science & Information Technology',
     year: 4,
     semester: 7,
     cgpa: 8.65,
@@ -17,6 +18,7 @@ export const MOCK_STUDENTS: StudentProfile[] = [
     targetRole: 'ML Research Engineer',
     careerInterests: ['Machine Learning', 'Computer Vision', 'Embedded AI'],
     enrollmentNumber: '2K22/CO/148',
+    studentUid: 'DL-DEL-DTU-BT-CS-22-0148',
     graduationYear: 2026,
     verificationStatus: 'Verified',
     verificationType: 'COLLEGE_ID',
@@ -100,6 +102,7 @@ export const MOCK_STUDENTS: StudentProfile[] = [
     institution: 'Indian Institute of Technology Delhi (IIT Delhi)',
     degree: 'B.Tech',
     branch: 'Electrical Engineering (VLSI Specialisation)',
+    engineeringCluster: 'Electronics & Communication (VLSI & Embedded)',
     year: 4,
     semester: 7,
     cgpa: 9.10,
@@ -109,6 +112,7 @@ export const MOCK_STUDENTS: StudentProfile[] = [
     verificationStatus: 'Verified',
     verificationType: 'COLLEGE_ID',
     enrollmentNumber: '2K22/EE/064',
+    studentUid: 'DL-DEL-IITD-BT-EC-22-0064',
     graduationYear: 2026,
     assessmentCompleted: true,
     lastAssessmentDate: '2026-09-01',
@@ -145,6 +149,7 @@ export const MOCK_STUDENTS: StudentProfile[] = [
     institution: 'Netaji Subhas University of Technology (NSUT)',
     degree: 'B.Tech',
     branch: 'Computer Science — AI & Data Science',
+    engineeringCluster: 'Computer Science & Information Technology',
     year: 3,
     semester: 6,
     cgpa: 8.20,
@@ -152,6 +157,7 @@ export const MOCK_STUDENTS: StudentProfile[] = [
     targetRole: 'Data Engineer',
     careerInterests: ['Data Engineering', 'Cloud Computing', 'MLOps'],
     enrollmentNumber: '2K23/AI/089',
+    studentUid: 'DL-DEL-NSUT-BT-AI-23-0089',
     graduationYear: 2026,
     verificationStatus: 'Pending',
     verificationType: 'COLLEGE_ID',
@@ -200,6 +206,7 @@ export const MOCK_STUDENTS: StudentProfile[] = [
     institution: 'Delhi Technological University (DTU)',
     degree: 'B.Tech',
     branch: 'Mechanical Engineering (Robotics & Automation)',
+    engineeringCluster: 'Mechanical, Robotics & Automotive EV',
     year: 3,
     semester: 5,
     cgpa: 8.52,
@@ -207,6 +214,7 @@ export const MOCK_STUDENTS: StudentProfile[] = [
     targetRole: 'Robotics Software Engineer',
     careerInterests: ['Robotics', 'ROS 2', 'Embedded Systems'],
     enrollmentNumber: '2K23/ME/042',
+    studentUid: 'DL-DEL-DTU-BT-ME-23-0042',
     graduationYear: 2027,
     verificationStatus: 'Pending',
     verificationType: 'COLLEGE_ID',
@@ -241,6 +249,119 @@ export const MOCK_STUDENTS: StudentProfile[] = [
         title: 'Autonomous Mobile Robot (AMR) SLAM',
         techStack: ['ROS 2', 'Lidar', 'Nav2', 'Python', 'C++'],
         description: 'Developed SLAM-based indoor navigation for differential drive warehouse robot with dynamic obstacle avoidance.'
+      }
+    ]
+  },
+  {
+    id: 'std-105',
+    name: 'Kabir Singhal',
+    email: 'kabir.s@iitd.ac.in',
+    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=256',
+    college: 'IIT Delhi',
+    institution: 'Indian Institute of Technology Delhi (IIT Delhi)',
+    degree: 'B.Tech',
+    branch: 'Civil Engineering (Structural & Infrastructure)',
+    engineeringCluster: 'Civil & Smart Infrastructure',
+    year: 4,
+    semester: 7,
+    cgpa: 8.78,
+    readinessScore: 84,
+    targetRole: 'Structural Design Engineer',
+    careerInterests: ['Structural Engineering', 'BIM Modeling', 'Seismic Design'],
+    enrollmentNumber: '2K22/CE/073',
+    studentUid: 'DL-DEL-IITD-BT-CE-22-0073',
+    graduationYear: 2026,
+    verificationStatus: 'Verified',
+    verificationType: 'COLLEGE_ID',
+    assessmentCompleted: true,
+    lastAssessmentDate: '2026-09-04',
+    skills: [
+      { id: 'sk-c1', name: 'Structural Analysis (STAAD.Pro)', category: 'Technical', level: 86, verified: true, demandLevel: 'Critical' },
+      { id: 'sk-c2', name: 'Reinforced Concrete (IS 456)', category: 'Technical', level: 88, verified: true, demandLevel: 'Critical' },
+      { id: 'sk-c3', name: 'Revit BIM Modeling', category: 'Digital Skills', level: 80, verified: true, demandLevel: 'High' },
+      { id: 'sk-c4', name: 'AutoCAD Civil 3D', category: 'Technical', level: 82, verified: true, demandLevel: 'High' },
+      { id: 'sk-c5', name: 'Geotechnical Engineering', category: 'Technical', level: 75, verified: true, demandLevel: 'Medium' },
+      { id: 'sk-c6', name: 'Surveying & GIS', category: 'Technical', level: 78, verified: true, demandLevel: 'Medium' },
+      { id: 'sk-10', name: 'Git & Linux', category: 'Digital Skills', level: 70, verified: true, demandLevel: 'Medium' }
+    ],
+    topGaps: [
+      {
+        skillId: 'sk-c3',
+        skillName: 'Revit BIM Modeling',
+        category: 'Digital Skills',
+        currentLevel: 80,
+        requiredLevel: 90,
+        gapPercentage: 11,
+        priority: 'Medium',
+        recommendedAction: 'Complete Bentley OpenBridge & Navisworks clash detection certification.'
+      }
+    ],
+    certifications: [
+      { id: 'cert-8', title: 'Bentley STAAD.Pro Certified Structural Engineer', issuer: 'Bentley Institute', issueDate: '2026-02', verified: true },
+      { id: 'cert-9', title: 'NPTEL Advanced Concrete Technology (IIT Roorkee)', issuer: 'NPTEL / IIT Roorkee', issueDate: '2025-11', verified: true }
+    ],
+    projects: [
+      {
+        id: 'proj-6',
+        title: 'Seismic Analysis of Elevated Metro Viaduct Box Girder',
+        techStack: ['STAAD.Pro', 'AutoCAD', 'IS 1893:2016', 'IRC 112'],
+        description: 'Modeled a 3-span continuous pre-stressed concrete box girder viaduct subjected to Zone IV response spectrum earthquake loads.'
+      }
+    ]
+  },
+  {
+    id: 'std-106',
+    name: 'Aditya Deshmukh',
+    email: 'aditya.d@nsut.ac.in',
+    avatar: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&q=80&w=256',
+    college: 'Netaji Subhas University of Technology (NSUT)',
+    institution: 'Netaji Subhas University of Technology (NSUT)',
+    degree: 'B.Tech',
+    branch: 'Electrical Engineering (Power Systems & EV Tech)',
+    engineeringCluster: 'Electrical, Power Systems & Renewable Energy',
+    year: 3,
+    semester: 6,
+    cgpa: 8.35,
+    readinessScore: 79,
+    targetRole: 'Power Electronics & EV Powertrain Engineer',
+    careerInterests: ['Power Electronics', 'Electric Vehicles', 'Smart Grid'],
+    enrollmentNumber: '2K23/EE/102',
+    studentUid: 'DL-DEL-NSUT-BT-EE-23-0102',
+    graduationYear: 2026,
+    verificationStatus: 'Pending',
+    verificationType: 'COLLEGE_ID',
+    collegeIdProof: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=400',
+    assessmentCompleted: true,
+    lastAssessmentDate: '2026-09-03',
+    skills: [
+      { id: 'sk-e1', name: 'Power Electronics', category: 'Technical', level: 82, verified: true, demandLevel: 'Critical' },
+      { id: 'sk-e2', name: 'MATLAB / Simulink', category: 'Technical', level: 85, verified: true, demandLevel: 'Critical' },
+      { id: 'sk-e3', name: 'Motor Drives & FOC', category: 'Technical', level: 74, verified: true, demandLevel: 'High' },
+      { id: 'sk-e4', name: 'Battery Management (BMS)', category: 'Technical', level: 76, verified: true, demandLevel: 'High' },
+      { id: 'sk-e5', name: 'PLC & SCADA Automation', category: 'Technical', level: 68, verified: false, demandLevel: 'Medium' },
+      { id: 'sk-10', name: 'Git & Linux', category: 'Digital Skills', level: 75, verified: true, demandLevel: 'Medium' }
+    ],
+    topGaps: [
+      {
+        skillId: 'sk-e5',
+        skillName: 'PLC & SCADA Automation',
+        category: 'Technical',
+        currentLevel: 68,
+        requiredLevel: 80,
+        gapPercentage: 15,
+        priority: 'High',
+        recommendedAction: 'Complete Siemens TIA Portal industrial automation course & configure Modbus TCP.'
+      }
+    ],
+    certifications: [
+      { id: 'cert-10', title: 'MathWorks Simulink EV Powertrain Certified', issuer: 'MathWorks', issueDate: '2026-03', verified: true }
+    ],
+    projects: [
+      {
+        id: 'proj-7',
+        title: 'Bidirectional DC-DC Converter for EV Regenerative Braking',
+        techStack: ['MATLAB/Simulink', 'PLECS', 'C2000 DSP', 'Altium'],
+        description: 'Designed a 5 kW dual active bridge (DAB) converter achieving 96.4% peak efficiency with zero-voltage switching (ZVS).'
       }
     ]
   }
