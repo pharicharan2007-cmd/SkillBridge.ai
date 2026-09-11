@@ -1,47 +1,54 @@
-# SkillBridge.ai
+# SkillBridge.ai - SIH 2026 Problem Statement 26044
 
-### AI-Powered Academia–Industry Collaboration Platform
+SkillBridge.ai is a Local-First, Edge AI-powered platform designed to bridge the gap between Indian academic institutions, students, faculties, and industry recruiters. It provides a secure, decentralized, and highly scalable multi-stakeholder credential verification and registration architecture built specifically for the Indian college ecosystem.
 
-SkillBridge.ai is an AI-powered platform designed to bridge the gap between **academic learning and industry requirements**. It connects students, industries, and educational institutions through intelligent skill mapping, career recommendations, internships, placements, and employability analytics.
+## Core Features & Architecture
 
-## 🎯 Problem
+### 1. Multi-Stakeholder Registration & Portals
+- **Students**: Skill-matched dashboard, internship tracking (aligned with Indian standards: 15, 30, or 45 days), and portfolio management.
+- **Institutional Admins**: Access to the AICTE Institutional Faculty Verification & Governance Directory to securely provision and verify faculties.
+- **Faculties**: Dedicated portals with statutory AICTE verification badges and role-aware dashboards.
+- **Industry Recruiters**: Corporate portals verified against MCA21 Corporate CIN and GSTIN records to ensure authenticity.
 
-Students often complete their academic programs without clearly understanding whether their skills match current industry requirements. At the same time, companies struggle to identify candidates with the right combination of technical and soft skills.
+### 2. Triangulated Trust Model
+To ensure maximum security and authenticity, the platform employs a Triangulated Trust verification system:
+- **Institutions** are verified via AICTE IDs.
+- **Corporate Recruiters** are validated using MCA21 CIN and GSTIN.
+- **Faculties and Students** are cross-verified by their respective institutional admins before full platform access is granted.
 
-SkillBridge.ai addresses this **academia–industry skill gap** by transforming student profiles, assessments, projects, certifications, and industry requirements into actionable skill intelligence.
+### 3. Local-First & Edge AI 
+- **Zero-Database Dependency**: The application leverages a robust Local-First architecture (using `localStorage` and decentralized caching) to maintain state, user sessions, and dynamic profiles without a central database bottleneck.
+- **Edge AI**: Intelligent skill-matching and user profiling are processed locally on the client's device, ensuring privacy, offline capabilities, and instant responsiveness.
 
-## 💡 Our Approach
+## Tech Stack
+- **Framework**: Next.js (App Router), React
+- **Styling**: Tailwind CSS
+- **Data Architecture**: Local-First (`localStorage`), Edge AI
+- **Deployment**: Node.js
 
-The platform follows a continuous **Skill → Gap → Learn → Opportunity → Feedback** cycle.
+## Getting Started
 
-1. **Skill Assessment** – Students complete assessments and build their digital skill profile.
-2. **Skill Gap Analysis** – Their current capabilities are compared with industry-required skills.
-3. **Readiness Score** – A 0–100 score represents their career readiness.
-4. **Learning Recommendations** – Missing skills are mapped to relevant courses, projects, and learning resources.
-5. **Opportunity Matching** – Internships and jobs are ranked using:
-   - 60% Skill Match
-   - 20% Eligibility
-   - 20% Career Interest
-6. **Continuous Tracking** – Applications, certifications, projects, and feedback continuously improve the student's skill profile.
+### Prerequisites
+- Node.js v18.x or higher
 
-## 🏗️ System Architecture
+### Installation
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/your-username/SkillBridge.ai.git
+   cd SkillBridge.ai
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Run the development server:
+   ```bash
+   npm run dev
+   ```
+4. Open [http://localhost:3000](http://localhost:3000) in your browser to view the application.
 
-```text
-Student / Industry / Institution Data
-                ↓
-        Profile & Assessment
-                ↓
-       Skill Extraction & Mapping
-                ↓
-         Skill Gap Analysis
-                ↓
-       Readiness Score (0–100)
-                ↓
-      AI Matching & Recommendation
-                ↓
- Internships | Jobs | Courses | Projects
-                ↓
-       Tracking & Analytics
-                ↓
-          Profile Feedback
-                ↺
+## Development Status
+- [x] Implement Edge AI skill-matching.
+- [x] Establish Multi-Stakeholder Registration Gateway.
+- [x] Configure AICTE & MCA21 credential verification badges.
+- [x] Align internship/training models to Indian academic cycles.
